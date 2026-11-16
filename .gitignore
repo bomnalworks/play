@@ -1,0 +1,7 @@
+node_modules/
+scratch/
+
+# 내부 문서는 공개 저장소에 올리지 않는다. 이 PC에만 둔다. (README '내부 문서' 참고)
+PLAN.md
+HANDOFF.md
+docs/

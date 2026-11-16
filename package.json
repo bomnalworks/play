@@ -1,0 +1,16 @@
+{
+  "name": "bomnal-play",
+  "version": "1.0.0",
+  "description": "봄날 운세 오락실 (play.bomnalworks.com)",
+  "scripts": {
+    "test": "node --test",
+    "build": "node scripts/sync-vendor.mjs && node scripts/build-outline.mjs && node scripts/build-data.mjs",
+    "serve": "node scripts/serve.mjs"
+  },
+  "license": "ISC",
+  "dependencies": {
+    "kor-lunar": "1.7.0"
+  },
+  "private": true,
+  "type": "module"
+}
