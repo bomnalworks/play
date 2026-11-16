@@ -21,7 +21,12 @@ function grade(upper, middle) {
   const base = LADDER.indexOf(upper.grade)
   if (base < 0) throw new Error(`상괘 등급 "${upper.grade}" 가 gradeLadder 에 없습니다.`)
   const shifted = base + middle.gradeShift
-  return LADDER[Math.min(Math.max(shifted, middle.gradeShift < 0 ? floor : 0), LADDER.length - 1)]
+  // 내리는 보정은 gradeFloor 아래로 내려가지 않고, 올리는 보정은 사다리 끝을 넘지 않는다.
+  // 어느 쪽이든 보정 방향을 거슬러 기본 등급을 넘지는 않는다. (살펴보기 + 내림 = 살펴보기)
+  const clamped = middle.gradeShift < 0
+    ? Math.min(base, Math.max(shifted, floor))
+    : Math.max(base, Math.min(shifted, LADDER.length - 1))
+  return LADDER[clamped]
 }
 
 const entries = reachableGwae(year).map((gwae) => {

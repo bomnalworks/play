@@ -27,7 +27,9 @@ jobs:
       - run: npm test            # 괘 계산과 풀이 데이터 검사
       - run: npm run build       # vendor 사본 + outline + 괘별 풀이 파일
       - name: 빌드 결과가 커밋본과 같은지 확인
-        run: git diff --exit-code data public
+        run: |
+          git add -A data public
+          git diff --cached --exit-code data public   # 새로 생긴 파일도 함께 본다
       - uses: actions/configure-pages@v5
       - uses: actions/upload-pages-artifact@v3
         with:

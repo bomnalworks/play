@@ -13,7 +13,12 @@ let failed = 0
 for (const group of groups) {
   const { entries, missing } = loadGroup(group)
   const problems = checkEntries(entries, outline, { partial: missing.length > 0 })
-  if (missing.length) console.log(`  (아직 없는 조각: ${missing.join(', ')})`)
+  if (missing.length) {
+    // 조각이 빠진 채로 쓰면 이미 만들어 둔 괘 파일이 사라진다. 검사만 하고 넘어간다.
+    console.log(`  건너뜀 — 아직 없는 조각: ${missing.join(', ')}`)
+    if (problems.length) { failed++; for (const p of problems.slice(0, 20)) console.error('   ' + p) }
+    continue
+  }
   if (problems.length) {
     failed++
     console.error(`✖ ${group}: ${problems.length}건`)

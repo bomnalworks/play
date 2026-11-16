@@ -18,6 +18,25 @@ test('outline 은 그해에 나올 수 있는 괘와 같다', () => {
   }
 })
 
+test('중괘 보정이 등급을 거꾸로 움직이지 않는다', () => {
+  const ladder = scheme.gradeLadder
+  const floor = ladder.indexOf(scheme.gradeFloor)
+  for (const e of outline.entries) {
+    const [u, m] = e.gwae.split('')
+    const base = ladder.indexOf(scheme.upper[u].grade)
+    const got = ladder.indexOf(e.grade)
+    const shift = scheme.middle[m].gradeShift
+    if (shift < 0) {
+      assert.ok(got <= base, `${e.gwae}: 내리는 보정인데 ${scheme.upper[u].grade} → ${e.grade}`)
+      assert.ok(got >= Math.min(base, floor), `${e.gwae}: ${scheme.gradeFloor} 아래로 내려갔다`)
+    } else if (shift > 0) {
+      assert.ok(got >= base, `${e.gwae}: 올리는 보정인데 ${scheme.upper[u].grade} → ${e.grade}`)
+    } else {
+      assert.equal(got, base, `${e.gwae}: 보정이 없는데 등급이 바뀌었다`)
+    }
+  }
+})
+
 test('config.js 는 scheme.json 의 연도·연령대와 같다', async () => {
   const config = await import('../public/js/config.js')
   assert.equal(config.YEAR, year)

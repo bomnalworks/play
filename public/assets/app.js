@@ -69,10 +69,10 @@ function remember(birth) {
 clearBtn.addEventListener('click', () => {
   try { localStorage.removeItem(STORE) } catch {}
   clearBtn.hidden = true
-  form.remember.checked = false
   resultBox.hidden = true
   resultBox.replaceChildren()
-  form.reset()
+  form.reset()                      // reset 이 checked 속성을 되살리므로
+  form.remember.checked = false     // 저장 안 함은 그 뒤에 끈다
   showLeap()
   form.year.focus()
 })
@@ -211,8 +211,8 @@ form.addEventListener('submit', async (e) => {
   e.preventDefault()
   try {
     const birth = readForm()
-    remember(birth)
     await show(birth)
+    remember(birth)   // 제대로 나온 생일만 저장한다
   } catch (err) {
     showError(err)
   }

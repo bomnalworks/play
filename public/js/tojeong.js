@@ -39,6 +39,9 @@ const rem = (n, m) => (n % m === 0 ? m : n % m)
  * @param {{calendar:'solar'|'lunar', year:number, month:number, day:number, isLeap?:boolean}} birth
  */
 export function toLunarBirth(birth) {
+  if (birth.calendar !== 'solar' && birth.calendar !== 'lunar') {
+    throw new RangeError('양력인지 음력인지 골라 주세요.')
+  }
   if (birth.calendar === 'solar') {
     if (!SolarTable.isValidDate(birth.year, birth.month, birth.day)) throw new RangeError('없는 날짜입니다.')
     if (!SolarTable.isDateInRange(birth.year, birth.month, birth.day)) throw new RangeError('볼 수 있는 범위를 벗어난 날짜입니다.')
