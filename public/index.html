@@ -16,6 +16,14 @@
 <meta name="twitter:card" content="summary" />
 <link rel="icon" href="assets/favicon.svg" type="image/svg+xml" />
 <link rel="stylesheet" href="assets/style.css" />
+<!-- 방문 통계(Google 애널리틱스). 생년월일·괘 번호는 보내지 않고, 버튼을 눌렀다는 사실만 남긴다. -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-VFY32V5YRJ"></script>
+<script>
+  window.dataLayer = window.dataLayer || []
+  function gtag() { dataLayer.push(arguments) }
+  gtag('js', new Date())
+  gtag('config', 'G-VFY32V5YRJ', { anonymize_ip: true })
+</script>
 <script type="importmap">
 { "imports": { "kor-lunar": "./vendor/kor-lunar.esm.js" } }
 </script>
@@ -81,6 +89,8 @@
       <li><strong>풀이 문장</strong>은 봄날웍스가 정한 해석 체계로 AI 도움을 받아 새로 쓴 글입니다. 옛 책이나 다른 사이트의 풀이를 옮기지 않았습니다.</li>
       <li>운세는 <strong>오락</strong>입니다. 건강·돈·법률 문제는 전문가와 상의하세요.</li>
       <li>생년월일은 <strong>서버로 보내지 않습니다.</strong> 계산은 이 브라우저 안에서 끝나고, 저장을 선택하면 이 브라우저에만 남습니다.</li>
+      <li>방문 통계를 보려고 <strong>Google 애널리틱스 쿠키</strong>를 씁니다. 어떤 경로로 들어와 어디를 보셨는지만 집계하며,
+        <strong>생년월일·괘 번호·연령대는 보내지 않습니다.</strong> 브라우저 설정에서 쿠키를 막으면 수집되지 않습니다.</li>
     </ul>
   </section>
 </main>

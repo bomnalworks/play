@@ -8,6 +8,9 @@ const STORE = 'bomnal-play-birth-v1'
 // 세는 나이로 연령대를 가른다. maxAge 가 null 이면 위로 열려 있다.
 const groupOf = (age) => GROUPS.find((g) => g.maxAge === null || age <= g.maxAge)
 
+// 버튼을 눌렀다는 사실만 보낸다. 생년월일·괘 번호·연령대는 절대 넘기지 않는다.
+const track = (name) => { try { window.gtag?.('event', name) } catch { /* 통계는 실패해도 그만 */ } }
+
 const $ = (sel) => document.querySelector(sel)
 const form = $('#birth-form')
 const errorBox = $('#form-error')
@@ -86,6 +89,7 @@ async function show(birth) {
   const group = groupOf(cast.detail.age)
   const reading = await load(`data/${YEAR}/${group.key}/${cast.gwae}.json`)
   render({ cast, group, reading })
+  track('view_result')
 }
 
 function render({ cast, group, reading: r }) {
@@ -139,7 +143,7 @@ function render({ cast, group, reading: r }) {
 
     <p class="who">${esc(group.label)} 기준 풀이입니다. ${YEAR}년 세는 나이 ${d.age}세 · 음력 생일 ${esc(lunar)}</p>
 
-    <details class="detail">
+    <details class="detail" id="how">
       <summary>괘가 어떻게 나왔는지 보기</summary>
       <dl>
         <dt>상괘 ${cast.upper}</dt><dd>세는 나이 ${d.age} + ${YEAR}년 태세수 ${d.taese} (${esc(d.secha)}) ÷ 8</dd>
@@ -167,16 +171,20 @@ function render({ cast, group, reading: r }) {
   $('#share').addEventListener('click', async () => {
     const url = location.origin + location.pathname   // 지금 보고 있는 주소를 그대로 나눈다
     try {
+      track('share_click')
       if (navigator.share) { await navigator.share({ title: '봄날 운세 오락실', text: shareText, url }); return }
       await navigator.clipboard.writeText(`${shareText}\n${url}`)
       $('#share-done').hidden = false
     } catch { /* 사용자가 취소한 경우 */ }
   })
   $('#again').addEventListener('click', () => {
+    track('try_again')
     resultBox.hidden = true
     $('#form-card').scrollIntoView({ behavior: 'smooth', block: 'start' })
     form.year.focus()
   })
+
+  $('#how').addEventListener('toggle', function () { if (this.open) track('open_detail') }, { once: true })
 
   mountAd()
   resultBox.scrollIntoView({ behavior: 'smooth', block: 'start' })
@@ -195,6 +203,7 @@ function hasBanner() {
 async function mountAd() {
   try {
     if (!(await hasBanner())) return
+    track('ad_shown')
     const frame = document.createElement('iframe')
     frame.src = 'ad/coupang.html'
     frame.title = '광고'
