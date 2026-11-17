@@ -53,7 +53,7 @@ for (const group of groups) {
     const { entries, missing } = loadGroup(group)
     assert.deepEqual(missing, [])
     assert.equal(entries.length, reachable.length)
-    assert.deepEqual(checkEntries(entries, outline), [])
+    assert.deepEqual(checkEntries(entries, outline, { fields: scheme.fields }), [])
 
     // 화면이 받는 파일에 outline 과 풀이가 모두 들어 있는지
     const sample = readJson(`public/data/${year}/${group}/${reachable[0]}.json`)

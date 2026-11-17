@@ -10,7 +10,7 @@ const SUM_MAX = 24    // 한 줄 요약
 
 const sentences = (s) => s.split(/(?<=[.!?])\s+/).map((t) => t.trim()).filter(Boolean)
 
-export function checkEntries(entries, outline, { partial = false } = {}) {
+export function checkEntries(entries, outline, { partial = false, fields = [] } = {}) {
   const p = []
   const want = new Map(outline.entries.map((e) => [e.gwae, e]))
   const seen = new Set()
@@ -21,7 +21,7 @@ export function checkEntries(entries, outline, { partial = false } = {}) {
     if (seen.has(e.gwae)) p.push(`${at}: 중복`)
     seen.add(e.gwae)
 
-    const texts = [e.summary, e.overall, ...(e.quarters ?? []), e.advice]
+    const texts = [e.summary, e.overall, ...(e.quarters ?? []), e.advice, ...Object.values(e.fields ?? {})]
     const countSentences = (label, text, min, max) => {
       const n = sentences(text ?? '').length
       if (n < min || n > max) p.push(`${at}: ${label} 문장 ${n}개 (${min}~${max}개)`)
@@ -31,6 +31,15 @@ export function checkEntries(entries, outline, { partial = false } = {}) {
     if (!Array.isArray(e.quarters) || e.quarters.length !== 4) p.push(`${at}: quarters 4개 아님`)
     else e.quarters.forEach((q, i) => countSentences(`quarters[${i}]`, q, 2, 3))
     countSentences('advice', e.advice, 2, 2)
+    // 분야별 문장이 본문(총운·분기·조언)과 똑같으면 읽을 때 같은 말을 두 번 보게 된다.
+    const body = new Set([...sentences(e.overall ?? ''), ...(e.quarters ?? []).flatMap(sentences), ...sentences(e.advice ?? '')])
+    for (const f of fields) {
+      if (e.fields?.[f.key] === undefined) { p.push(`${at}: 분야 ${f.label} 없음`); continue }
+      countSentences(`분야 ${f.label}`, e.fields[f.key], 2, 2)
+      for (const s of sentences(e.fields[f.key])) {
+        if (body.has(s)) p.push(`${at}: 분야 ${f.label} 문장이 본문과 같음 — "${s}"`)
+      }
+    }
     if (!e.lucky?.color || !e.lucky?.keyword || !Number.isInteger(e.lucky?.number)) p.push(`${at}: lucky 비어 있음`)
     else if (e.lucky.number < 1 || e.lucky.number > 45) p.push(`${at}: lucky.number ${e.lucky.number}`)
 

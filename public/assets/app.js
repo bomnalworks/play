@@ -1,7 +1,7 @@
 // 봄날 운세 오락실 — 2027 토정비결 화면
 // 생년월일은 서버로 보내지 않는다. 계산은 이 파일 안에서 끝나고, 저장은 localStorage 뿐이다.
 import { castGwae } from '../js/tojeong.js'
-import { YEAR, GROUPS } from '../js/config.js'   // scheme.json 에서 생성 (연도·연령대 구분)
+import { YEAR, GROUPS, FIELDS } from '../js/config.js'   // scheme.json 에서 생성 (연도·연령대·분야)
 
 const STORE = 'bomnal-play-birth-v1'
 
@@ -112,6 +112,14 @@ function render({ cast, group, reading: r }) {
       <ul class="quarters">
         ${r.quarters.map((q, i) => `
           <li class="${i === r.peak ? 'peak' : ''}"><strong>${quarterLabels[i]}</strong>${esc(q)}</li>`).join('')}
+      </ul>
+    </div>
+
+    <div class="block">
+      <h3>분야별로 보면</h3>
+      <ul class="fields">
+        ${FIELDS.map((f) => `
+          <li><strong>${esc(f.label)}</strong><span>${esc(r.fields?.[f.key] ?? '')}</span></li>`).join('')}
       </ul>
     </div>
 

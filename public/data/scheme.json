@@ -222,5 +222,27 @@
     "차차 맑음",
     "맑음"
   ],
-  "gradeFloor": "다지기"
+  "gradeFloor": "다지기",
+  "fields": [
+    {
+      "key": "money",
+      "label": "돈",
+      "hint": "들어오고 나가는 흐름"
+    },
+    {
+      "key": "work",
+      "label": "하는 일",
+      "hint": "공부·일·사업 등 본업"
+    },
+    {
+      "key": "people",
+      "label": "사람",
+      "hint": "가족·동료·새 인연"
+    },
+    {
+      "key": "health",
+      "label": "몸과 마음",
+      "hint": "체력·기분·생활 리듬"
+    }
+  ]
 }

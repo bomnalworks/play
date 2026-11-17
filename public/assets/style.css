@@ -101,6 +101,9 @@ button.plain { background: var(--paper); color: var(--ink-soft); border-color: v
 .quarters strong { display: block; color: var(--brand); font-size: 0.85rem; margin-bottom: 4px; }
 .quarters li.peak { border-color: var(--brand-2); }
 .quarters li.peak strong::after { content: ' · 흐름이 바뀌는 때'; font-weight: 400; color: var(--ink-soft); }
+.fields { display: grid; gap: 12px; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); padding: 0; margin: 10px 0 0; list-style: none; }
+.fields li { border-left: 3px solid var(--brand-soft); padding: 2px 0 2px 14px; }
+.fields strong { display: block; color: var(--brand); font-size: 0.85rem; margin-bottom: 2px; }
 .lucky { display: flex; gap: 10px; flex-wrap: wrap; margin: 10px 0 0; padding: 0; list-style: none; }
 .lucky li { background: var(--paper-soft); border: 1px solid var(--line); border-radius: 12px; padding: 10px 16px; flex: 1 1 120px; }
 .lucky span { display: block; font-size: 0.8rem; color: var(--ink-soft); }

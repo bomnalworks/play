@@ -45,12 +45,14 @@ mkdirSync(`${root}data/${year}`, { recursive: true })
 writeFileSync(`${root}data/${year}/outline.json`,
   JSON.stringify({ version: scheme.version, year, count: entries.length, entries }, null, 1) + '\n')
 
-// 화면이 쓰는 값(연도·연령대 구분)은 scheme.json 에서 뽑아 한 모듈로 내보낸다. 손으로 적지 않는다.
+// 화면이 쓰는 값(연도·연령대 구분·분야 이름)은 scheme.json 에서 뽑아 한 모듈로 내보낸다. 손으로 적지 않는다.
 const groups = Object.entries(scheme.ageGroups).map(([key, g]) => ({ key, label: g.label, maxAge: g.maxAge }))
+const fields = scheme.fields.map(({ key, label }) => ({ key, label }))
 writeFileSync(`${root}public/js/config.js`,
   `// scripts/build-outline.mjs 가 public/data/scheme.json 에서 만든 파일입니다. 직접 고치지 마세요.\n` +
   `export const YEAR = ${year}\n` +
-  `export const GROUPS = ${JSON.stringify(groups)}\n`)
+  `export const GROUPS = ${JSON.stringify(groups)}\n` +
+  `export const FIELDS = ${JSON.stringify(fields)}\n`)
 
 const tally = {}
 for (const e of entries) tally[e.grade] = (tally[e.grade] ?? 0) + 1
