@@ -1,0 +1,87 @@
+/* 봄날 스도쿠 전용. 이 게임 말고는 아무 데서도 안 읽는다
+   (판·칸·숫자판 같은 흔한 이름이라 공용 시트에 두면 다음 게임과 부딪친다) */
+
+.sudoku { max-width: 420px; margin: 0 auto 18px; }
+
+.levels { display: grid; grid-template-columns: repeat(var(--levels, 10), 1fr); gap: 4px; margin-bottom: 12px; }
+.lv {
+  font-size: 0.9rem; padding: 7px 0;
+  color: var(--ink-soft); background: var(--paper-soft);
+  border-color: var(--line); border-radius: 8px;
+}
+.lv:hover:not(:disabled) { color: var(--brand); }
+.lv.on { background: var(--brand-2); border-color: var(--brand-2); color: #fff; font-weight: 700; }
+.lv:disabled { opacity: 0.5; cursor: default; }
+
+.bar { display: flex; align-items: center; gap: 10px; margin-bottom: 10px; }
+.bar .spacer { flex: 1; }
+.bar .time { font-size: 1.3rem; font-weight: 700; font-variant-numeric: tabular-nums; letter-spacing: 0.02em; }
+.bar .left { font-size: 0.85rem; color: var(--ink-soft); }
+.bar button { padding: 7px 12px; font-size: 0.85rem; }
+
+/* 판 */
+.boardwrap { position: relative; }
+.confetti {
+  position: absolute; inset: 0; width: 100%; height: 100%;
+  pointer-events: none; z-index: 2;
+}
+.board {
+  display: grid; grid-template-columns: repeat(9, 1fr);
+  background: var(--paper-up);
+  border: 2px solid var(--ink-soft); border-radius: 10px; overflow: hidden;
+  touch-action: manipulation;
+}
+.board.paused { visibility: hidden; }
+.cell {
+  position: relative; aspect-ratio: 1;
+  display: flex; align-items: center; justify-content: center;
+  font: inherit; font-size: 1.25rem; line-height: 1;
+  color: var(--brand); background: var(--paper-up);
+  border: 0; border-right: 1px solid var(--line); border-bottom: 1px solid var(--line);
+  border-radius: 0; padding: 0; cursor: pointer;
+}
+.cell:nth-child(9n) { border-right: 0; }
+.cell:nth-last-child(-n + 9) { border-bottom: 0; }
+.cell.edge-right { border-right: 2px solid var(--ink-soft); }
+.cell.edge-bottom { border-bottom: 2px solid var(--ink-soft); }
+.cell.fixed { color: var(--ink); font-weight: 700; background: var(--paper-soft); cursor: default; }
+.cell.near { background: var(--brand-soft); }
+.cell.fixed.near { background: color-mix(in srgb, var(--brand-soft) 70%, var(--paper-soft)); }
+.cell.same { outline: 2px solid var(--brand-2); outline-offset: -2px; }
+.cell.on { background: var(--brand-2); color: #fff; }
+.cell.on.fixed { color: #fff; }
+.cell.wrong { color: #b3261e; background: rgba(179, 38, 30, 0.12); }
+.cell.stuck { background: rgba(179, 38, 30, 0.18); }
+@media (prefers-color-scheme: dark) { .cell.wrong { color: #f2b8b5; } }
+
+/* 칸 안의 큰 숫자와, 빈칸에 작게 보이는 후보 */
+.face { display: flex; align-items: center; justify-content: center; }
+.cands { position: absolute; inset: 0; display: grid; grid-template-columns: repeat(3, 1fr); grid-template-rows: repeat(3, 1fr); width: 100%; height: 100%; }
+.cands i {
+  display: flex; align-items: center; justify-content: center;
+  font-style: normal; font-size: 0.56rem; line-height: 1; color: var(--ink-soft); opacity: 0.85;
+}
+.cell.on .cands i { color: rgba(255, 255, 255, 0.85); }
+
+.note { min-height: 1.5em; margin: 10px 0 0; font-size: 0.9rem; color: var(--brand); }
+
+/* 숫자판 */
+.numpad { display: grid; grid-template-columns: repeat(9, 1fr); gap: 4px; margin: 10px 0 0; }
+.num {
+  font-size: 1.15rem; font-weight: 600; padding: 12px 0;
+  color: var(--brand); background: var(--paper-soft);
+  border-color: var(--line); border-radius: 8px;
+}
+.num:hover:not(:disabled) { background: var(--brand-soft); }
+.num:disabled { cursor: default; }
+.num.blocked { color: var(--ink-soft); opacity: 0.3; }
+.num.marked { position: relative; color: var(--ink-soft); opacity: 0.55; }
+.num.marked::after {
+  content: ''; position: absolute; inset: 20% 22%;
+  background: linear-gradient(to bottom right, transparent 44%, #b3261e 44%, #b3261e 56%, transparent 56%),
+    linear-gradient(to bottom left, transparent 44%, #b3261e 44%, #b3261e 56%, transparent 56%);
+}
+
+.tools { display: flex; gap: 6px; flex-wrap: wrap; margin: 8px 0 0; }
+.tools button { flex: 1 1 auto; padding: 9px 10px; font-size: 0.85rem; }
+.tools button.on { background: var(--brand-2); border-color: var(--brand-2); color: #fff; font-weight: 600; }

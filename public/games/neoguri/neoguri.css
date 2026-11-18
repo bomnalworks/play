@@ -1,0 +1,62 @@
+/* 봄날 너구리 전용. 이 게임 말고는 아무 데서도 안 읽는다 */
+
+.arcade {
+  max-width: 380px;
+  margin: 0 auto 18px;
+}
+/* 너구리 게임 화면 (스도쿠 판도 id 가 board 라 클래스로 가른다) */
+.screen {
+  display: block;
+  width: 100%;
+  height: auto;
+  aspect-ratio: 360 / 460;
+  background: #16120f;
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  touch-action: none; /* 캔버스를 눌러도 화면이 밀리지 않게 */
+}
+.screen:focus-visible { outline: 2px solid var(--brand-2); outline-offset: 2px; }
+
+.controls { display: flex; gap: 8px; flex-wrap: wrap; justify-content: center; margin: 12px 0 0; }
+.controls button { padding: 9px 16px; font-size: 0.92rem; }
+
+/* 터치 조작판 */
+button, .cell { -webkit-tap-highlight-color: transparent; }
+.pad {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  margin: 14px 0 0;
+  touch-action: none;
+  user-select: none;
+  -webkit-user-select: none;
+}
+.dpad {
+  display: grid;
+  grid-template-columns: repeat(3, 56px);
+  grid-template-rows: repeat(3, 48px);
+  gap: 4px;
+}
+.key {
+  font-size: 1.05rem;
+  line-height: 1;
+  color: var(--ink);
+  background: var(--paper-soft);
+  border-color: var(--line);
+}
+.key:active { background: var(--brand-soft); border-color: var(--brand-2); color: var(--brand); }
+.key.up { grid-area: 1 / 2; }
+.key.left { grid-area: 2 / 1; }
+.key.right { grid-area: 2 / 3; }
+.key.down { grid-area: 3 / 2; }
+.key.jump {
+  width: 92px;
+  height: 92px;
+  border-radius: 50%;
+  font-weight: 700;
+  font-size: 1rem;
+  background: var(--brand-soft);
+  border-color: var(--brand-2);
+  color: var(--brand);
+}

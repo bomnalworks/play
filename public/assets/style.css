@@ -53,6 +53,10 @@ p { margin: 0 0 12px; }
 .top { border-bottom: 1px solid var(--line); background: var(--paper-soft); padding: 14px 0; }
 .brand { font-weight: 700; margin: 0; }
 .tag { margin: 2px 0 0; font-size: 0.85rem; color: var(--ink-soft); }
+.nav { display: flex; gap: 16px; margin: 8px 0 0; font-size: 0.9rem; }
+.nav a { color: var(--ink-soft); text-decoration: none; padding: 2px 0; border-bottom: 2px solid transparent; }
+.nav a:hover { color: var(--brand); }
+.nav a.on { color: var(--brand); font-weight: 600; border-bottom-color: var(--brand-2); }
 
 .card {
   background: var(--paper-up);

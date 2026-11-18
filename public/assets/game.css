@@ -1,0 +1,20 @@
+/* 게임 페이지들이 함께 쓰는 것만 둔다.
+   한 게임에만 있는 이름(판·칸·조작판…)은 그 게임 폴더의 시트로 보낸다 — 다음 게임과 부딪치지 않게. */
+button { -webkit-tap-highlight-color: transparent; }
+
+.sr { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
+
+/* 조작 설명 */
+.howto dl { display: grid; grid-template-columns: auto 1fr; gap: 6px 14px; margin: 0; font-size: 0.92rem; }
+.howto dt { color: var(--brand); font-weight: 600; }
+.howto dd { margin: 0; color: var(--ink-soft); }
+
+/* 게임 목록 */
+.games { display: grid; gap: 14px; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); list-style: none; padding: 0; margin: 0; }
+.games li { background: var(--paper-up); border: 1px solid var(--line); border-radius: var(--radius); overflow: hidden; }
+.games a { display: block; padding: 18px; text-decoration: none; color: inherit; height: 100%; }
+.games a:hover { background: var(--brand-soft); }
+.games strong { display: block; color: var(--brand); font-size: 1.05rem; margin-bottom: 4px; }
+.games span { font-size: 0.9rem; color: var(--ink-soft); }
+.games li.soon { opacity: 0.6; }
+.games li.soon div { padding: 18px; }

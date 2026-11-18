@@ -1,5 +1,6 @@
 // 봄날 운세 오락실 — 2027 토정비결 화면
 // 생년월일은 서버로 보내지 않는다. 계산은 이 파일 안에서 끝나고, 저장은 localStorage 뿐이다.
+import { track, store } from '../js/browser.js'   // 방문 통계·이 브라우저 저장소 (게임들과 같이 쓴다)
 import { castGwae } from '../js/tojeong.js'
 import { YEAR, GROUPS, FIELDS } from '../js/config.js'   // scheme.json 에서 생성 (연도·연령대·분야)
 
@@ -7,9 +8,6 @@ const STORE = 'bomnal-play-birth-v1'
 
 // 세는 나이로 연령대를 가른다. maxAge 가 null 이면 위로 열려 있다.
 const groupOf = (age) => GROUPS.find((g) => g.maxAge === null || age <= g.maxAge)
-
-// 버튼을 눌렀다는 사실만 보낸다. 생년월일·괘 번호·연령대는 절대 넘기지 않는다.
-const track = (name) => { try { window.gtag?.('event', name) } catch { /* 통계는 실패해도 그만 */ } }
 
 const $ = (sel) => document.querySelector(sel)
 const form = $('#birth-form')
@@ -62,15 +60,13 @@ function fillForm(birth) {
 }
 
 function remember(birth) {
-  try {
-    if (form.remember.checked) localStorage.setItem(STORE, JSON.stringify(birth))
-    else localStorage.removeItem(STORE)
-  } catch { /* 저장을 못 해도 결과는 보여 준다 */ }
+  if (form.remember.checked) store.write(STORE, birth)   // 생년월일은 이 브라우저에만 남는다
+  else store.remove(STORE)
   clearBtn.hidden = !form.remember.checked
 }
 
 clearBtn.addEventListener('click', () => {
-  try { localStorage.removeItem(STORE) } catch {}
+  store.remove(STORE)
   clearBtn.hidden = true
   resultBox.hidden = true
   resultBox.replaceChildren()
@@ -237,7 +233,7 @@ form.addEventListener('submit', async (e) => {
 
 showLeap()
 try {
-  const saved = JSON.parse(localStorage.getItem(STORE) ?? 'null')
+  const saved = store.read(STORE)
   if (saved?.year) {
     fillForm(saved)
     clearBtn.hidden = false
