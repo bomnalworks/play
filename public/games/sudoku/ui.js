@@ -4,6 +4,7 @@
 import { track, store } from '../../js/browser.js'
 import { createSound, bindSoundButton } from '../../js/sound.js'
 import { celebrate } from '../../js/celebrate.js'
+import { mountAd } from '../../js/ad.js'
 import { createTimer, startTimer, pauseTimer, timerMs, isRunning, formatTime } from '../../js/timer.js'
 import {
   MAX_LEVEL, clampLevel, generateAsync, createBoard, isFixed, legalMask, openMask, has,
@@ -200,6 +201,8 @@ function finishCheck() {
     }
     note(`완성! ${formatTime(ms)}${record ? ' — 최고 기록이에요' : ` · 최고 ${formatTime(best)}`} · 곧 새 문제로 넘어갑니다`)
     track('sudoku_clear')
+    // 푸는 동안에는 광고를 띄우지 않는다. 한 판을 끝낸 뒤에 판 아래로 한 번만 붙는다.
+    mountAd()
     Sound.play('fanfare')
     celebrate(confetti, { duration: CELEBRATE_MS })
     view.nextPuzzle = setTimeout(() => newPuzzle(pref.level), NEXT_AFTER_MS)

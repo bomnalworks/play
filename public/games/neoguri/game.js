@@ -2,6 +2,7 @@
 //
 // 최고 점수와 소리 설정은 이 브라우저(localStorage)에만 남고, 서버로 아무것도 보내지 않습니다.
 import { track, store } from '../../js/browser.js'
+import { mountAd } from '../../js/ad.js'
 import { createSound, bindSoundButton } from '../../js/sound.js'
 import { SKIN, loadSkinImages, paint, drawBackdrop } from './skin.js'
 import { W, H, HUD, WALL, SCORE, createGame, startGame, togglePause, step } from './logic.js'
@@ -43,7 +44,7 @@ const EVENTS = {
   hunger: { tune: 'starve', say: true },
   drop: { tune: 'crash', say: true },
   clear: { tune: 'clear', say: true },
-  over: { tune: 'over', say: true, track: 'game_over', record: true },
+  over: { tune: 'over', say: true, track: 'game_over', record: true, ad: true },
 }
 
 /* ---------- 입력 ---------- */
@@ -76,6 +77,8 @@ function drainEvents() {
       store.write(BEST_KEY, best)
     }
     if (event.track) track(event.track)
+    // 놀이 중에는 광고를 띄우지 않는다. 한 판이 끝난 뒤에 판 아래로 한 번만 붙는다.
+    if (event.ad) mountAd()
     if (event.say) say()
   }
   game.events.length = 0

@@ -9,6 +9,10 @@ button { -webkit-tap-highlight-color: transparent; }
 .howto dt { color: var(--brand); font-weight: 600; }
 .howto dd { margin: 0; color: var(--ink-soft); }
 
+/* 광고 자리는 카드 안이 아니라 본문에 바로 붙는다 (토정비결은 결과 카드 안이라 필요 없다).
+   .card 는 위 여백이 없으니 아래 카드와 붙지 않게 여기서 띄운다. */
+#ad-here .ad { margin-bottom: 20px; }
+
 /* 게임 목록 */
 .games { display: grid; gap: 14px; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); list-style: none; padding: 0; margin: 0; }
 .games li { background: var(--paper-up); border: 1px solid var(--line); border-radius: var(--radius); overflow: hidden; }

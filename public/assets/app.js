@@ -1,6 +1,7 @@
 // 봄날 운세 오락실 — 2027 토정비결 화면
 // 생년월일은 서버로 보내지 않는다. 계산은 이 파일 안에서 끝나고, 저장은 localStorage 뿐이다.
 import { track, store } from '../js/browser.js'   // 방문 통계·이 브라우저 저장소 (게임들과 같이 쓴다)
+import { mountAd } from '../js/ad.js'            // 쿠팡 배너 자리 (게임 끝 화면과 같이 쓴다)
 import { castGwae } from '../js/tojeong.js'
 import { YEAR, GROUPS, FIELDS } from '../js/config.js'   // scheme.json 에서 생성 (연도·연령대·분야)
 
@@ -154,12 +155,6 @@ function render({ cast, group, reading: r }) {
       <button type="button" class="plain" id="again">다른 생일로 보기</button>
     </div>
     <p class="share-done" id="share-done" hidden>링크를 복사했어요.</p>
-
-    <div class="ad" id="ad" hidden>
-      <span class="ad-label">광고</span>
-      <div id="ad-slot"></div>
-      <p class="ad-notice">이 사이트는 쿠팡 파트너스 활동의 일환으로, 이에 따른 일정액의 수수료를 제공받습니다.</p>
-    </div>
   `
   resultBox.hidden = false
 
@@ -182,52 +177,8 @@ function render({ cast, group, reading: r }) {
 
   $('#how').addEventListener('toggle', function () { if (this.open) track('open_detail') }, { once: true })
 
-  mountAd()
+  mountAd(resultBox)   // 배너가 있을 때만 결과 아래에 광고 자리가 붙는다
   resultBox.scrollIntoView({ behavior: 'smooth', block: 'start' })
-}
-
-// 쿠팡 배너는 ad/coupang.html 에 배너 태그를 붙여 넣으면 그때부터 보인다. 비어 있으면 자리도 그리지 않는다.
-let adReady
-let adFit          // 지금 걸려 있는 resize 처리. 결과를 다시 그리면 이전 것을 떼고 새로 건다
-function hasBanner() {
-  adReady ??= fetch('ad/coupang.html')
-    .then((res) => {
-      if (!res.ok) throw new Error(`ad ${res.status}`)   // 404·5xx 모두 아래 catch 로
-      return res.text()
-    })
-    // 본문에 요소가 하나라도 있으면 배너가 있는 것이다. 주석은 요소가 아니라 세지 않으니
-    // "태그를 지우고 주석만 남기면 광고가 안 뜬다"가 그대로 성립한다. 태그 종류도 안 가린다.
-    .then((html) => new DOMParser().parseFromString(html, 'text/html').body.children.length > 0)
-    .catch(() => { adReady = undefined; return false })   // 한 번 끊겼다고 영구히 광고를 숨기지 않는다
-  return adReady
-}
-
-async function mountAd() {
-  try {
-    if (!(await hasBanner())) return
-    track('ad_shown')
-    const frame = document.createElement('iframe')
-    frame.src = 'ad/coupang.html'
-    frame.title = '광고'
-    frame.loading = 'lazy'
-    frame.height = '110'                       // 배너 높이를 읽기 전 임시값
-    frame.setAttribute('scrolling', 'no')
-    // 같은 출처라 배너의 실제 높이를 읽어 칸을 맞춘다 — 빈 여백도 잘림도 없게.
-    // 배너는 칸 폭에 따라 줄어드니 화면을 돌리면 높이도 달라진다. 그래서 resize 때도 다시 잰다.
-    // 못 읽으면 임시값을 그대로 쓴다. 배너 크기를 바꿔도 코드는 안 고친다.
-    const fit = () => {
-      const h = frame.contentDocument?.body?.scrollHeight
-      if (h) frame.height = String(h)
-    }
-    frame.addEventListener('load', fit)
-    // "다른 생일로 보기" 로 결과를 다시 그리면 이전 iframe 은 통째로 버려진다.
-    // 그때 남은 resize 처리를 떼지 않으면 볼 때마다 하나씩 쌓인다.
-    if (adFit) window.removeEventListener('resize', adFit)
-    adFit = fit
-    window.addEventListener('resize', adFit)
-    $('#ad').hidden = false                    // 먼저 보이게 해야 iframe 이 제 폭을 갖고 높이를 잴 수 있다
-    $('#ad-slot').appendChild(frame)
-  } catch { /* 광고가 없어도 운세는 보인다 */ }
 }
 
 /* ---------- 시작 ---------- */
