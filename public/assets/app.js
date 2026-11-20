@@ -188,11 +188,17 @@ function render({ cast, group, reading: r }) {
 
 // 쿠팡 배너는 ad/coupang.html 에 배너 태그를 붙여 넣으면 그때부터 보인다. 비어 있으면 자리도 그리지 않는다.
 let adReady
+let adFit          // 지금 걸려 있는 resize 처리. 결과를 다시 그리면 이전 것을 떼고 새로 건다
 function hasBanner() {
   adReady ??= fetch('ad/coupang.html')
-    .then((res) => (res.ok ? res.text() : ''))
-    .then((html) => html.replace(/<!--[\s\S]*?-->/g, '').includes('coupang'))   // 안내 주석은 빼고 본다
-    .catch(() => false)
+    .then((res) => {
+      if (!res.ok) throw new Error(`ad ${res.status}`)   // 404·5xx 모두 아래 catch 로
+      return res.text()
+    })
+    // 본문에 요소가 하나라도 있으면 배너가 있는 것이다. 주석은 요소가 아니라 세지 않으니
+    // "태그를 지우고 주석만 남기면 광고가 안 뜬다"가 그대로 성립한다. 태그 종류도 안 가린다.
+    .then((html) => new DOMParser().parseFromString(html, 'text/html').body.children.length > 0)
+    .catch(() => { adReady = undefined; return false })   // 한 번 끊겼다고 영구히 광고를 숨기지 않는다
   return adReady
 }
 
@@ -204,10 +210,23 @@ async function mountAd() {
     frame.src = 'ad/coupang.html'
     frame.title = '광고'
     frame.loading = 'lazy'
-    frame.height = '140'
+    frame.height = '110'                       // 배너 높이를 읽기 전 임시값
     frame.setAttribute('scrolling', 'no')
+    // 같은 출처라 배너의 실제 높이를 읽어 칸을 맞춘다 — 빈 여백도 잘림도 없게.
+    // 배너는 칸 폭에 따라 줄어드니 화면을 돌리면 높이도 달라진다. 그래서 resize 때도 다시 잰다.
+    // 못 읽으면 임시값을 그대로 쓴다. 배너 크기를 바꿔도 코드는 안 고친다.
+    const fit = () => {
+      const h = frame.contentDocument?.body?.scrollHeight
+      if (h) frame.height = String(h)
+    }
+    frame.addEventListener('load', fit)
+    // "다른 생일로 보기" 로 결과를 다시 그리면 이전 iframe 은 통째로 버려진다.
+    // 그때 남은 resize 처리를 떼지 않으면 볼 때마다 하나씩 쌓인다.
+    if (adFit) window.removeEventListener('resize', adFit)
+    adFit = fit
+    window.addEventListener('resize', adFit)
+    $('#ad').hidden = false                    // 먼저 보이게 해야 iframe 이 제 폭을 갖고 높이를 잴 수 있다
     $('#ad-slot').appendChild(frame)
-    $('#ad').hidden = false
   } catch { /* 광고가 없어도 운세는 보인다 */ }
 }
 

@@ -1,16 +1,27 @@
 <!doctype html>
 <html lang="ko">
 <head><meta charset="utf-8" /><title>광고</title>
-<style>html,body{margin:0;background:transparent;font-family:system-ui,sans-serif}</style>
+<style>
+  html,body{margin:0;background:transparent;font-family:system-ui,sans-serif}
+  /* 배너는 자기 크기 그대로, 칸보다 넓으면 줄어든다. 가운데 정렬 */
+  img{display:block;margin:0 auto;border:0;max-width:100%;height:auto}
+</style>
 </head>
 <body>
 <!--
-  여기에 쿠팡 파트너스에서 받은 배너 태그를 그대로 붙여 넣으세요.
-  (쿠팡 파트너스 → 상품/배너 → 배너 → 원하는 크기 선택 → 스크립트 복사)
+  쿠팡 파트너스 배너 태그. 바꿀 때는 아래 <a> 한 줄을 통째로 갈아 끼운다.
+  (쿠팡 파트너스 -> 상품/배너 -> 배너 -> 크기 선택 -> 태그 복사)
 
-  붙여 넣기 전까지는 사이트에 광고 자리가 아예 그려지지 않습니다.
-  태그를 붙이면 결과 화면 아래에 자동으로 나타납니다. (주석만 있으면 안 그려집니다)
-  대가성 문구("이 사이트는 쿠팡 파트너스 활동의 일환으로...")는 화면에서 함께 보여 줍니다.
+  referrerpolicy="unsafe-url" 는 쿠팡이 실적을 추적하는 데 필요하니 지우지 않는다.
+  대가성 문구는 사이트 쪽(assets/app.js)에서 광고 아래에 함께 보여 준다.
+  <a> 를 지우고 주석만 남기면 사이트에 광고 자리가 아예 그려지지 않는다.
+
+  320x100 하나만 둔다. 광고 칸의 최대 폭이 638px(.wrap 720 - card/여백 82)이라
+  728x90 을 넣으면 어차피 줄여서 그린다. 크기별로 나누면 안 쓰는 배너까지 받아
+  쿠팡 노출 집계만 부풀어서, 한 장으로 두는 쪽이 맞다.
+  PC 쪽 방문이 많아지면 아래 줄을 728x90 태그로 갈면 된다:
+  https://link.coupang.com/a/iOYs0DSMXA  (배너 1052263, w=728&h=90)
 -->
+<a href="https://link.coupang.com/a/iOYvwPDy3M" target="_blank" referrerpolicy="unsafe-url"><img src="https://ads-partners.coupang.com/banners/1052264?trackingCode=AF5343607&subId=&traceId=V0-301-879dd1202e5c73b2-I1052264&w=320&h=100" width="320" height="100" alt="쿠팡 광고"></a>
 </body>
 </html>
