@@ -5,23 +5,55 @@
   html,body{margin:0;background:transparent;font-family:system-ui,sans-serif}
   /* 배너는 자기 크기 그대로, 칸보다 넓으면 줄어든다. 가운데 정렬 */
   img{display:block;margin:0 auto;border:0;max-width:100%;height:auto}
+  /* 상품 카드(120x240)를 한 줄로. 칸이 좁으면(폰) 줄을 늘리지 않고 옆으로 밀어 본다 —
+     줄바꿈을 허용하면 카드 다섯 장이 세 줄, 700px 넘게 결과 아래를 차지한다.
+     줄 자체를 카드 폭만큼만 잡아 가운데 두고, 칸을 넘치면 칸 폭에서 멈춰 스크롤한다
+     (justify-content:center 는 넘칠 때 왼쪽 카드가 잘려 안 보인다) */
+  .deck{display:flex;gap:8px;width:max-content;max-width:100%;margin:0 auto;overflow-x:auto;overflow-y:hidden}
+  .deck>iframe{flex:none;border:0}
 </style>
 </head>
 <body>
 <!--
-  쿠팡 파트너스 배너 태그. 바꿀 때는 아래 <a> 한 줄을 통째로 갈아 끼운다.
-  (쿠팡 파트너스 -> 상품/배너 -> 배너 -> 크기 선택 -> 태그 복사)
+  쿠팡 파트너스 상품 카드 줄. 카드를 더하거나 뺄 때는 아래 <template id="cards"> 안의 iframe 줄만 손댄다.
+  쿠팡 파트너스 -> 링크 생성 -> 상품 검색 -> iframe 태그 복사 (120x240 그대로).
+  다섯 장까지. 120x5 + 틈 = 632px 로 광고 칸(토정비결 638px)에 한 줄로 딱 들어간다.
+
+  카드 순서는 열 때마다 섞는다. 폰에서는 앞의 한두 장만 보이니, 늘 같은 카드만 보이지 않게.
+  카드를 deck 에 바로 두고 나중에 옮기면 iframe 이 다시 불려 쿠팡에 노출이 두 번 잡힌다.
+  그래서 template 에 넣어 두고(이때는 불리지 않는다) 섞은 순서로 한 번만 꺼내 붙인다.
 
   referrerpolicy="unsafe-url" 는 쿠팡이 실적을 추적하는 데 필요하니 지우지 않는다.
-  대가성 문구는 사이트 쪽(js/ad.js)에서 광고 아래에 함께 보여 준다.
-  <a> 를 지우고 주석만 남기면 사이트에 광고 자리가 아예 그려지지 않는다.
+  대가성 문구는 사이트 쪽(js/ad.js)에서 광고 아래에 한 번 보여 준다.
+  template 안의 카드를 다 지우면 광고 자리가 그려지지 않는다(ad.js 가 a·img·iframe 이 있는지 본다).
+  광고 차단이 카드를 숨기면 그려진 높이가 0 이라 자리를 거두지만, 네트워크에서 막으면 쿠팡 쪽 틀이라 알 수 없어 빈 칸이 남는다.
+  지금 카드는 2026-11-20 에 고른 겨울 상품이다. 봄에는 갈 것.
 
-  320x100 하나만 둔다. 광고 칸의 최대 폭이 638px(토정비결 결과 카드 안)~680px(게임 페이지,
-  카드 밖)이라 728x90 을 넣으면 어차피 줄여서 그린다. 크기별로 나누면 안 쓰는 배너까지 받아
-  쿠팡 노출 집계만 부풀어서, 한 장으로 두는 쪽이 맞다.
-  PC 쪽 방문이 많아지면 아래 줄을 728x90 태그로 갈면 된다:
-  https://link.coupang.com/a/iOYs0DSMXA  (배너 1052263, w=728&h=90)
+  예전 배너로 되돌리려면 주석 아래 태그를 모두 지우고 이걸로 갈면 된다:
+  320x100: <a href="https://link.coupang.com/a/iOYvwPDy3M" target="_blank" referrerpolicy="unsafe-url"><img src="https://ads-partners.coupang.com/banners/1052264?trackingCode=AF5343607&subId=&traceId=V0-301-879dd1202e5c73b2-I1052264&w=320&h=100" width="320" height="100" alt="쿠팡 광고"></a>
+  728x90:  https://link.coupang.com/a/iOYs0DSMXA  (배너 1052263, w=728&h=90)
 -->
-<a href="https://link.coupang.com/a/iOYvwPDy3M" target="_blank" referrerpolicy="unsafe-url"><img src="https://ads-partners.coupang.com/banners/1052264?trackingCode=AF5343607&subId=&traceId=V0-301-879dd1202e5c73b2-I1052264&w=320&h=100" width="320" height="100" alt="쿠팡 광고"></a>
+<div class="deck" id="deck"></div>
+<template id="cards">
+<!-- 곰돌이 휴대용 손난로 -->
+<iframe src="https://coupa.ng/cre8h2" width="120" height="240" frameborder="0" scrolling="no" referrerpolicy="unsafe-url"></iframe>
+<!-- 일리윤 세라마이드 아토 로션 508ml -->
+<iframe src="https://coupa.ng/cre84X" width="120" height="240" frameborder="0" scrolling="no" referrerpolicy="unsafe-url"></iframe>
+<!-- 벤타 에어워셔 LW-25W -->
+<iframe src="https://coupa.ng/cre9kU" width="120" height="240" frameborder="0" scrolling="no" referrerpolicy="unsafe-url"></iframe>
+<!-- 비나잇 리모컨형 온수매트 퀸 -->
+<iframe src="https://coupa.ng/cre9pg" width="120" height="240" frameborder="0" scrolling="no" referrerpolicy="unsafe-url"></iframe>
+<!-- 아이폰 Duo 자급제 256GB -->
+<iframe src="https://coupa.ng/cre9sL" width="120" height="240" frameborder="0" scrolling="no" referrerpolicy="unsafe-url"></iframe>
+</template>
+<script>
+  // 카드 순서 섞기 (Fisher-Yates). 문서를 읽는 도중 붙이니 바깥 틀의 load 는 카드까지 기다린다.
+  const cards = [...document.getElementById('cards').content.children]
+  for (let i = cards.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1))
+    ;[cards[i], cards[j]] = [cards[j], cards[i]]
+  }
+  document.getElementById('deck').append(...cards)
+</script>
 </body>
 </html>

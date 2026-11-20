@@ -1,4 +1,4 @@
-// 쿠팡 배너 한 장. ad/coupang.html 에 배너 태그가 들어 있을 때만 자리가 그려진다.
+// 쿠팡 광고 한 자리. ad/coupang.html 에 광고 태그가 들어 있을 때만 자리가 그려진다.
 // 토정비결 결과와 게임 끝 화면이 같이 쓴다. 라벨·대가성 문구까지 여기서 만든다 —
 // 페이지마다 마크업을 복사해 두면 문구 한 줄 고칠 때 세 군데를 고쳐야 한다.
 import { track } from './browser.js'
@@ -6,7 +6,7 @@ import { track } from './browser.js'
 const SRC = '/ad/coupang.html'   // /games/… 안에서도 같은 파일을 보도록 절대 경로
 const ANCHOR = 'ad-here'   // 게임 페이지가 광고 자리로 비워 두는 곳. 붙일 데를 호출부마다 적지 않는다
 const NOTICE = '이 사이트는 쿠팡 파트너스 활동의 일환으로, 이에 따른 일정액의 수수료를 제공받습니다.'
-const FALLBACK_H = '110'   // 배너 높이를 읽기 전에 쓰는 임시값
+const FALLBACK_H = '240'   // 광고 높이를 읽기 전에 쓰는 임시값. 지금 광고(상품 카드) 높이로 둬서 다 뜬 뒤 칸이 덜 출렁인다
 
 let adReady
 function hasBanner() {
@@ -15,9 +15,15 @@ function hasBanner() {
       if (!res.ok) throw new Error(`ad ${res.status}`)   // 404·5xx 모두 아래 catch 로
       return res.text()
     })
-    // 본문에 요소가 하나라도 있으면 배너가 있는 것이다. 주석은 요소가 아니라 세지 않으니
-    // "태그를 지우고 주석만 남기면 광고가 안 뜬다"가 그대로 성립한다. 태그 종류도 안 가린다.
-    .then((html) => new DOMParser().parseFromString(html, 'text/html').body.children.length > 0)
+    // 광고 요소(a·img·iframe)가 본문이나 template 안에 하나라도 있으면 광고가 있는 것이다.
+    // "본문에 요소가 있나"로 보면 카드를 담는 deck·template·script 만 남아도 있다고 나온다.
+    // 카드를 다 지우거나 태그를 지우고 주석만 남기면 광고가 안 뜬다.
+    .then((html) => {
+      const doc = new DOMParser().parseFromString(html, 'text/html')
+      const AD = 'a, img, iframe'
+      return Boolean(doc.body.querySelector(AD))
+        || [...doc.querySelectorAll('template')].some((t) => t.content.querySelector(AD))
+    })
     .catch(() => { adReady = undefined; return false })   // 한 번 끊겼다고 영구히 광고를 숨기지 않는다
   return adReady
 }
@@ -47,9 +53,15 @@ function settle(frame, box) {
   // 틀을 만들자마자 오는 빈 문서(about:blank)의 load 는 배너가 아니다. 그냥 넘기고 진짜 문서를 기다린다.
   if (!doc || doc.URL === 'about:blank') return
   const images = [...doc.images]
-  // 그림을 하나도 못 받아 왔다면(광고 차단·쿠팡 장애) "광고" 글자와 빈 칸만 남는다. 자리째 거둔다.
-  // 그림이 아닌 배너 태그를 넣었을 때를 위해, 그림이 아예 없는 경우는 건드리지 않는다.
+  // <a><img> 배너의 그림을 하나도 못 받아 왔다면(광고 차단·쿠팡 장애) "광고" 글자와 빈 칸만 남는다.
+  // 자리째 거둔다. 그림이 없는 광고(상품 카드 iframe)는 여기서 건드리지 않는다.
   if (images.length && images.every((img) => img.naturalWidth === 0)) {
+    box.remove()
+    return
+  }
+  // 그려진 게 없으면(광고 차단이 카드를 숨겼을 때) "광고" 글자만 남지 않게 자리째 거둔다.
+  // 상품 카드는 다른 출처라, 네트워크에서 막혀 빈 카드로 뜨는 경우는 알 수 없다(빈 칸이 남고 노출로 센다).
+  if (!doc.body.scrollHeight) {
     box.remove()
     return
   }
