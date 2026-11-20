@@ -201,8 +201,6 @@ function finishCheck() {
     }
     note(`완성! ${formatTime(ms)}${record ? ' — 최고 기록이에요' : ` · 최고 ${formatTime(best)}`} · 곧 새 문제로 넘어갑니다`)
     track('sudoku_clear')
-    // 푸는 동안에는 광고를 띄우지 않는다. 한 판을 끝낸 뒤에 판 아래로 한 번만 붙는다.
-    mountAd()
     Sound.play('fanfare')
     celebrate(confetti, { duration: CELEBRATE_MS })
     view.nextPuzzle = setTimeout(() => newPuzzle(pref.level), NEXT_AFTER_MS)
@@ -380,3 +378,5 @@ window.addEventListener('keydown', (e) => {
 /* ---------- 시작 ---------- */
 
 newPuzzle(pref.level)
+// 광고는 처음부터 게임과 놀이 방법 사이에 둔다 (/js/ad.js)
+mountAd()

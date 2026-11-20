@@ -1,7 +1,7 @@
 // 봄날 운세 오락실 — 2027 토정비결 화면
 // 생년월일은 서버로 보내지 않는다. 계산은 이 파일 안에서 끝나고, 저장은 localStorage 뿐이다.
 import { track, store } from '../js/browser.js'   // 방문 통계·이 브라우저 저장소 (게임들과 같이 쓴다)
-import { mountAd } from '../js/ad.js'            // 쿠팡 배너 자리 (게임 끝 화면과 같이 쓴다)
+import { mountAd } from '../js/ad.js'            // 쿠팡 배너 자리 (게임 페이지와 같이 쓴다)
 import { castGwae } from '../js/tojeong.js'
 import { YEAR, GROUPS, FIELDS } from '../js/config.js'   // scheme.json 에서 생성 (연도·연령대·분야)
 

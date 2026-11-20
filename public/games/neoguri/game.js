@@ -44,7 +44,7 @@ const EVENTS = {
   hunger: { tune: 'starve', say: true },
   drop: { tune: 'crash', say: true },
   clear: { tune: 'clear', say: true },
-  over: { tune: 'over', say: true, track: 'game_over', record: true, ad: true },
+  over: { tune: 'over', say: true, track: 'game_over', record: true },
 }
 
 /* ---------- 입력 ---------- */
@@ -77,8 +77,6 @@ function drainEvents() {
       store.write(BEST_KEY, best)
     }
     if (event.track) track(event.track)
-    // 놀이 중에는 광고를 띄우지 않는다. 한 판이 끝난 뒤에 판 아래로 한 번만 붙는다.
-    if (event.ad) mountAd()
     if (event.say) say()
   }
   game.events.length = 0
@@ -258,6 +256,9 @@ pauseBtn.addEventListener('click', () => {
   say()
 })
 bindSoundButton(soundBtn, Sound)
+
+// 광고는 처음부터 게임과 놀이 방법 사이에 둔다 (/js/ad.js)
+mountAd()
 
 /* ---------- 키보드 ---------- */
 
