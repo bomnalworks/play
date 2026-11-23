@@ -76,15 +76,10 @@
     linear-gradient(to bottom left, transparent 44%, #b3261e 44%, #b3261e 56%, transparent 56%);
 }
 
-/* 폰: 숫자판·도구까지 한 화면에 들어오게 판을 줄인다.
-   --sd-chrome = 판 말고 나머지 높이 (재는 법은 game.css) */
+/* 폰: 판 크기는 game.css 의 .play/.fit 이 남는 높이에 맞춘다. 여기는 줄 사이만 촘촘하게 */
 @media (max-width: 600px) {
-  .sudoku { --sd-chrome: 338px; }
-  .boardwrap {
-    max-width: max(250px, calc(100vh - var(--sd-chrome)));
-    max-width: max(250px, calc(100svh - var(--sd-chrome))); /* 100svh 를 모르는 브라우저는 위 줄을 쓴다 */
-    margin: 0 auto;
-  }
+  /* 81칸은 글자 때문에 194px 아래로 줄지 않는다 - 판 자리를 그만큼은 남긴다 (아주 낮은 폰에서는 페이지가 조금 늘어난다) */
+  .play > .boardwrap.fit { min-height: 200px; }
   .levels { margin-bottom: 8px; }
   .bar { margin-bottom: 6px; }
   .num { padding: 9px 0; }

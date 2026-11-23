@@ -47,7 +47,7 @@
   <h1>봄날 리버시</h1>
   <p class="lead intro">상대 돌을 내 돌 사이에 끼우면 내 색으로 뒤집힙니다. 판이 다 찼을 때 <strong>돌이 더 많은 쪽</strong>이 이깁니다.</p>
 
-  <div class="reversi">
+  <div class="reversi play">
     <div class="rv-pick">
       <div class="rv-levels" id="levels" role="group" aria-label="난이도 고르기"></div>
       <div class="rv-sides" id="sides" role="group" aria-label="내 돌 고르기"></div>
@@ -61,8 +61,8 @@
       <button type="button" class="primary" id="new">새 판</button>
     </div>
 
-    <div class="rv-wrap">
-      <div class="rv-board" id="board" role="group" aria-label="리버시 판"></div>
+    <div class="rv-wrap fit">
+      <div class="rv-board fit-board" id="board" role="group" aria-label="리버시 판"></div>
       <canvas class="confetti" id="confetti" aria-hidden="true"></canvas>
     </div>
     <p class="note" id="note" role="status" aria-live="polite"></p>

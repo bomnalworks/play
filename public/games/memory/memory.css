@@ -25,8 +25,8 @@
 .mm-board {
   display: grid; grid-template-columns: repeat(var(--cols, 4), 1fr); gap: var(--gap, 8px);
   margin: 0 auto;
-  max-width: min(var(--max, 100%), max(var(--mm-min, 200px), calc((100vh - var(--mm-chrome, 80px)) * var(--cols, 4) / var(--rows, 4) * 2 / 3)));
-  max-width: min(var(--max, 100%), max(var(--mm-min, 200px), calc((100svh - var(--mm-chrome, 80px)) * var(--cols, 4) / var(--rows, 4) * 2 / 3)));
+  max-width: min(var(--max, 100%), max(200px, calc((100vh - 80px) * var(--cols, 4) / var(--rows, 4) * 2 / 3)));
+  max-width: min(var(--max, 100%), max(200px, calc((100svh - 80px) * var(--cols, 4) / var(--rows, 4) * 2 / 3)));
   touch-action: manipulation;
 }
 .mm-board.paused { visibility: hidden; }
@@ -69,10 +69,16 @@
   .mm-card.got .mm-inner { animation: none; }
 }
 
-/* 폰: 테마·단계 버튼과 아래 도구 줄까지 한 화면에 들어오게 판을 줄인다.
-   --mm-chrome = 판 말고 나머지 높이 (카드 사이 틈 포함, 재는 법은 game.css) */
+/* 폰: 판 크기는 남는 높이에 맞춘다 (game.css 의 .play/.fit). 카드는 2:3 이고 칸 사이에 틈이 있어
+   판 모양이 단계마다 달라서, 넓이를 높이에서 바로 셈한다: 카드 높이 = (높이 - 줄 틈) / 줄 수 */
 @media (max-width: 600px) {
-  .memory { --mm-chrome: 292px; --mm-min: 160px; }
+  @supports (width: 1cqh) {
+    .memory .fit-board {
+      width: min(var(--max, 100%), 100cqw,
+        calc((100cqh - (var(--rows) - 1) * var(--gap)) / var(--rows) * 2 / 3 * var(--cols) + (var(--cols) - 1) * var(--gap)));
+      max-width: none;
+    }
+  }
   .mm-themes { margin-bottom: 4px; }
   .mm-theme { padding: 2px 6px; }
   .mm-stages { margin-bottom: 6px; }

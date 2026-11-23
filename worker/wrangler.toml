@@ -1,0 +1,13 @@
+# 봄날 오락실 순위표 서버 (Cloudflare Worker). 올리는 법은 worker/README.md
+name = "bomnal-scores"
+main = "src/index.js"
+compatibility_date = "2026-11-01"
+
+# 주소: https://scores.bomnalworks.com (같은 Cloudflare 계정의 도메인에 Worker 를 바로 붙인다. workers.dev 주소는 쓰지 않는다)
+workers_dev = false
+routes = [{ pattern = "scores.bomnalworks.com", custom_domain = true }]
+
+# KV 이름공간은 `npx wrangler kv namespace create SCORES` 로 만들고, 나온 id 를 아래에 적는다
+[[kv_namespaces]]
+binding = "SCORES"
+id = "c323f411582146e8887031cc758c7f51"

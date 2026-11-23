@@ -33,6 +33,38 @@ button { -webkit-tap-highlight-color: transparent; }
    .card 는 위 여백이 없으니 아래 카드와 붙지 않게 여기서 띄운다. */
 #ad-here .ad { margin-bottom: 20px; }
 
+/* 명예의 전당 - 1~5등 (js/scores.js 가 서버가 있을 때만 그린다) */
+.hall h2 small { font-size: 0.8rem; font-weight: 400; color: var(--ink-soft); margin-left: 4px; }
+.hall-list { list-style: none; padding: 0; margin: 0 0 10px; font-variant-numeric: tabular-nums; }
+.hall-list li {
+  display: grid; grid-template-columns: 2em 4.5em 1fr auto; align-items: baseline; gap: 8px;
+  padding: 6px 4px; border-bottom: 1px dashed var(--line);
+}
+.hall-list li:last-child { border-bottom: 0; }
+.hall-list b { color: var(--brand); }
+.hall-name { font-family: ui-monospace, Consolas, monospace; font-weight: 700; letter-spacing: 0.15em; }
+.hall-score { text-align: right; font-weight: 600; }
+.hall-at { font-size: 0.8rem; color: var(--ink-soft); }
+.hall-list li.mine { background: var(--brand-soft); border-radius: 8px; }
+
+/* 이니셜 넣는 창 - 오락실 기록판처럼 큰 글자 세 칸 */
+.hall-dialog {
+  border: 1px solid var(--line); border-radius: var(--radius); padding: 22px 20px 18px;
+  background: var(--paper-up); color: var(--ink); width: min(340px, calc(100vw - 32px));
+}
+.hall-dialog::backdrop { background: rgba(20, 16, 13, 0.55); }
+.hall-title { font-size: 1.15rem; font-weight: 700; color: var(--brand); margin: 0 0 4px; text-align: center; }
+.hall-what { font-size: 0.9rem; color: var(--ink-soft); text-align: center; margin: 0 0 14px; }
+.hall-label { display: block; font-size: 0.85rem; color: var(--ink-soft); text-align: center; }
+.hall-label input {
+  display: block; width: 7.2ch; margin: 8px auto 0; padding: 6px 0 6px 0.5ch;
+  font: 700 2rem/1.2 ui-monospace, Consolas, monospace; letter-spacing: 0.5ch; text-transform: uppercase; text-align: left;
+  color: var(--brand); background: var(--paper); border: 2px solid var(--brand-2); border-radius: 10px;
+}
+.hall-error { min-height: 1.4em; margin: 8px 0 0; font-size: 0.85rem; color: #b3261e; text-align: center; }
+.hall-actions { display: flex; gap: 8px; justify-content: center; margin-top: 6px; }
+.hall-actions button { padding: 9px 18px; }
+
 /* 게임 목록 - 왼쪽에 게임 화면(정사각), 오른쪽에 이름과 설명 */
 .games { display: grid; gap: 12px; grid-template-columns: repeat(auto-fit, minmax(min(300px, 100%), 1fr)); list-style: none; padding: 0; margin: 0 0 24px; }
 .games li { background: var(--paper-up); border: 1px solid var(--line); border-radius: var(--radius); overflow: hidden; }
@@ -48,14 +80,17 @@ button { -webkit-tap-highlight-color: transparent; }
 .games strong { display: block; color: var(--brand); font-size: 1.05rem; margin-bottom: 2px; }
 .games span { font-size: 0.88rem; line-height: 1.6; color: var(--ink-soft); }
 .games li.soon { opacity: 0.6; }
+/* 예전에 토정비결 주소(/)로 공유된 링크로 온 사람에게 바로 가는 길 */
+.to-tojeong { margin: -12px 0 18px; font-size: 0.92rem; }
+.to-tojeong a { font-weight: 600; }
 .games-sub { font-size: 1.05rem; margin: 8px 0 10px; color: var(--ink-soft); }
 .games .shot-text { font-size: 0.95rem; font-weight: 700; line-height: 1.3; text-align: center; color: var(--brand); background: var(--brand-soft); }
 
 /* 폰에서는 게임 한 판이 스크롤 없이 한 화면에 들어오게 한다.
    머리말을 한 줄로 줄이고, 제목 아래 안내 문장(.intro)은 숨긴다 — 같은 내용이 아래 '놀이 방법'에 있다.
-   판 크기는 게임마다 화면 높이(100svh)에서 판 말고 다른 것들의 높이를 뺀 만큼으로 맞춘다 (각 게임 시트의 --*-chrome).
-   --*-chrome 은 390×664 화면에서 잰 '머리말부터 맨 아래 버튼 줄까지 높이 - 판 높이' + 여유 8px 다.
-   여기 머리말·제목 규칙이나 게임의 버튼 줄을 바꾸면 그 값을 다시 잰다 (안 재면 폰에서 조금씩 스크롤이 생긴다) */
+   게임 칸(.play)을 화면 높이만큼의 세로 줄로 세우고, 판 자리(.fit)가 버튼 줄들을 뺀 나머지를 채운다.
+   판(.fit-board)은 그 자리 안에서 모양(--aspect = 넓이/높이)을 지키며 가장 크게 - 버튼 줄을 더하거나 빼도 다시 잴 것이 없다.
+   --page-top 은 머리말과 제목 높이(+아래 여유)다. 이 블록의 머리말·제목 규칙을 바꿀 때만 다시 본다 */
 @media (max-width: 600px) {
   .top { padding: 8px 0; }
   .top .wrap { padding: 0 12px; }
@@ -66,6 +101,24 @@ button { -webkit-tap-highlight-color: transparent; }
   main.wrap { padding: 0 12px; }
   main > h1 { font-size: 1.2rem; margin: 8px 0 8px; }
   .lead.intro { display: none; }
+  /* 컨테이너 쿼리(cqw·cqh)를 모르는 브라우저(iOS 15 등)는 이 블록을 건너뛰고 예전처럼 페이지가 스크롤된다 */
+  @supports (width: 1cqh) {
+    .play {
+      --page-top: 104px;
+      display: flex; flex-direction: column;
+      /* 최소 높이다 - 버튼 줄이 길거나 글자를 키운 폰에서는 판이 160 을 지키고 페이지가 늘어난다 (아래 칸을 덮지 않는다) */
+      min-height: calc(100vh - var(--page-top));
+      min-height: calc(100svh - var(--page-top)); /* 100svh 를 모르는 브라우저는 위 줄을 쓴다 */
+      margin-bottom: 18px;
+    }
+    .play > * { flex: none; }
+    .play > .fit {
+      flex: 1 1 0; min-height: 160px;
+      container-type: size; /* 아래 cqw·cqh 가 이 자리의 넓이·높이다 */
+      display: grid; place-items: center;
+    }
+    .fit > .fit-board { width: min(100cqw, 100cqh * var(--aspect, 1)); }
+  }
   .note { margin-top: 6px; font-size: 0.85rem; }
   .tools { margin-top: 6px; gap: 4px; flex-wrap: nowrap; }
   .tools button { padding: 8px 4px; font-size: 0.8rem; min-width: 0; }

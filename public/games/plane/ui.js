@@ -1,9 +1,11 @@
 // 봄날 종이비행기 - 화면·입력·소리 (규칙은 logic.js)
 //
-// 최고 기록과 설정은 이 브라우저(localStorage)에만 남고, 서버로 아무것도 보내지 않습니다.
+// 최고 기록과 설정은 이 브라우저(localStorage)에만 남는다.
+// (명예의 전당에 이니셜을 남길 때만 이니셜·기록·날짜를 순위표 서버에 보낸다 - /js/scores.js)
 import { track, store } from '../../js/browser.js'
 import { createSound, bindSoundButton, FANFARE } from '../../js/sound.js'
 import { mountAd } from '../../js/ad.js'
+import { createHall } from '../../js/scores.js'
 import { W, H, COL, PLANE_X, PLANE, createGame, start, step, meters } from './logic.js'
 
 const BEST_KEY = 'bomnal-plane-best-v1'
@@ -23,7 +25,9 @@ const COLORS = {
   sky: '#1c1714',
   wall: '#6b5240',
   wallEdge: '#9a7656',
-  pillar: '#7d5f48',
+  stoneTip: '#a5815f', // 종유석 끝 (밑동은 벽 색에서 시작해 끝으로 갈수록 밝아진다)
+  stoneShine: 'rgba(255, 240, 220, 0.16)',
+  drip: 'rgba(190, 215, 230, 0.75)',
   plane: '#fbf7f0',
   planeFold: '#d9cfc0',
   trail: 'rgba(251, 247, 240, 0.25)',
@@ -40,6 +44,7 @@ const soundBtn = $('#sound')
 const statusBox = $('#status')
 
 const Sound = createSound(SOUND_KEY, TUNES)
+const hall = createHall('plane')
 let best = store.read(BEST_KEY, 0) || 0
 
 let game = createGame()
@@ -52,14 +57,18 @@ const trail = [] // 지나온 자리 (그리기만, 판정 없음)
 const pressing = new Set() // 지금 누르고 있는 것들 (손가락·마우스·키). 하나라도 있으면 오른다
 const holding = () => pressing.size > 0
 
+// 시작·다시 시작하는 누름은 오르기로 치지 않는다 - 새 판은 떨어지며 시작하고, 다음 누름부터 오른다
 function press(id) {
   if (pressing.has(id)) return
-  pressing.add(id)
-  if (game.phase === 'ready') begin()
-  else if (game.phase === 'over' && performance.now() - overAt > OVER_HOLD_MS) {
-    reset()
-    begin()
+  if (game.phase === 'ready') return begin()
+  if (game.phase === 'over') {
+    if (performance.now() - overAt > OVER_HOLD_MS) {
+      reset()
+      begin()
+    }
+    return
   }
+  pressing.add(id)
 }
 const release = (id) => pressing.delete(id)
 
@@ -80,13 +89,14 @@ canvas.addEventListener('contextmenu', (e) => e.preventDefault())
 
 const FLY_KEYS = new Set(['Space', 'ArrowUp', 'KeyW'])
 window.addEventListener('keydown', (e) => {
+  if (e.ctrlKey || e.metaKey || e.altKey) return // Ctrl+W 같은 브라우저 단축키는 게임 몫이 아니다
   const onControl = e.target instanceof Element && e.target.closest('button, a, input')
   if (onControl && (e.code === 'Space' || e.code === 'Enter')) return // 버튼 위의 스페이스는 그 버튼 몫
   if (FLY_KEYS.has(e.code)) {
     e.preventDefault()
     press(e.code)
   }
-  if (e.code === 'KeyM') soundBtn.click()
+  if (e.code === 'KeyM' && !e.repeat) soundBtn.click()
 })
 window.addEventListener('keyup', (e) => release(e.code))
 window.addEventListener('blur', () => pressing.clear())
@@ -94,6 +104,7 @@ window.addEventListener('blur', () => pressing.clear())
 /* ---------- 한 판 ---------- */
 
 function reset() {
+  statusBox.textContent = ''
   game = createGame()
   trail.length = 0
   lastTrail = 0
@@ -106,11 +117,13 @@ function begin() {
   track('plane_start')
   Sound.play('start')
   canvas.focus({ preventScroll: true })
-  say()
+  say('출발! 누르고 있으면 오릅니다')
 }
 
 function finish() {
   overAt = performance.now()
+  // 누른 채 부딪히면 곧 뜨는 명예의 전당 창이 떼는 순간을 가로챌 수 있다 - 다음 판까지 눌린 채로 남지 않게 비운다
+  pressing.clear()
   const m = meters(game)
   newRecord = m > best
   if (newRecord) {
@@ -119,6 +132,7 @@ function finish() {
   }
   track('plane_over')
   Sound.play(newRecord ? 'record' : 'crash')
+  hall.offer('all', m) // 1~5등에 들면 이니셜을 받는다
   say(newRecord ? `${m}m, 최고 기록입니다` : `${m}m 에서 부딪혔어요. 최고 ${best}m`)
 }
 
@@ -136,6 +150,7 @@ function say(text = '') {
 /* ---------- 그리기 ---------- */
 
 let dpr = 0
+let lastStill = '' // 시작·끝 화면은 그림이 그대로다 - 바뀐 게 있을 때만 다시 칠한다
 function resize() {
   const next = Math.min(window.devicePixelRatio || 1, 2)
   if (next === dpr) return
@@ -143,6 +158,7 @@ function resize() {
   canvas.width = Math.round(W * dpr)
   canvas.height = Math.round(H * dpr)
   ctx.setTransform(dpr, 0, 0, dpr, 0, 0)
+  lastStill = '' // 크기를 다시 잡으면 그림이 지워진다 - 멈춘 화면도 다음 프레임에 다시 칠한다
 }
 
 function drawCave() {
@@ -163,14 +179,50 @@ function drawCave() {
     ctx.lineWidth = 3
     ctx.stroke()
   }
-  for (const p of game.pillars) {
-    const x = p.x - off
-    if (x > W || x + p.w < 0) continue
-    ctx.fillStyle = COLORS.pillar
-    ctx.fillRect(x, p.top, p.w, p.bottom - p.top)
-    ctx.strokeStyle = COLORS.wallEdge
-    ctx.lineWidth = 2
-    ctx.strokeRect(x + 1, p.top + 1, p.w - 2, p.bottom - p.top - 2)
+  for (const p of game.pillars) drawStone(p, p.x - off)
+}
+
+// 종유석: 벽에서 자라 나와 끝으로 가늘어지는 삼각형 (부딪히는 모양 logic.js stoneHits 와 같다)
+function drawStone(p, x) {
+  if (x > W || x + p.w < 0) return
+  const down = p.hang === 'top' ? 1 : -1 // 끝이 아래(천장 종유석)인가 위(바닥 석순)인가
+  const { baseL, baseR, tip } = p
+  const base = down > 0 ? Math.min(baseL, baseR) : Math.max(baseL, baseR)
+  const far = base - down * 40 // 밑동 위쪽을 벽 속까지 칠해 벽과 한 덩어리로 보이게
+  const cx = x + p.w / 2
+  ctx.beginPath()
+  ctx.moveTo(x, far)
+  ctx.lineTo(x, baseL)
+  ctx.lineTo(cx, tip)
+  ctx.lineTo(x + p.w, baseR)
+  ctx.lineTo(x + p.w, far)
+  ctx.closePath()
+  const shade = ctx.createLinearGradient(0, base, 0, tip)
+  shade.addColorStop(0, COLORS.wall)
+  shade.addColorStop(1, COLORS.stoneTip)
+  ctx.fillStyle = shade
+  ctx.fill()
+  // 테두리는 비스듬한 두 변만 (밑동은 벽에 묻힌다)
+  ctx.beginPath()
+  ctx.moveTo(x, baseL)
+  ctx.lineTo(cx, tip)
+  ctx.lineTo(x + p.w, baseR)
+  ctx.strokeStyle = COLORS.wallEdge
+  ctx.lineWidth = 2
+  ctx.stroke()
+  // 왼쪽 면에 빛 한 줄
+  ctx.beginPath()
+  ctx.moveTo(x + p.w * 0.25, baseL + (tip - baseL) * 0.5)
+  ctx.lineTo(cx - 1, tip - down * 8)
+  ctx.strokeStyle = COLORS.stoneShine
+  ctx.lineWidth = 3
+  ctx.stroke()
+  // 천장 종유석 끝에 맺힌 물방울
+  if (down > 0) {
+    ctx.beginPath()
+    ctx.arc(cx, tip + 3, 1.8, 0, Math.PI * 2)
+    ctx.fillStyle = COLORS.drip
+    ctx.fill()
   }
 }
 
@@ -254,7 +306,6 @@ function draw() {
 let acc = 0
 let last = 0
 let lastTrail = 0
-let lastStill = '' // 시작·끝 화면은 그림이 그대로다 - 바뀐 게 있을 때만 다시 칠한다
 function frame(ts) {
   if (!last) last = ts
   acc += Math.min((ts - last) / 1000, 0.1) // 탭을 다시 열었을 때 한꺼번에 계산하지 않게 자른다
@@ -286,5 +337,6 @@ resize()
 window.addEventListener('resize', resize)
 say()
 requestAnimationFrame(frame)
+hall.show('all')
 // 광고는 처음부터 게임과 놀이 방법 사이에 둔다 (/js/ad.js)
 mountAd()

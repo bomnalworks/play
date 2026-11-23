@@ -5,12 +5,16 @@
   "scripts": {
     "test": "node --test",
     "build": "node scripts/sync-vendor.mjs && node scripts/build-outline.mjs && node scripts/build-data.mjs",
-    "serve": "node scripts/serve.mjs"
+    "serve": "node scripts/serve.mjs",
+    "scores": "node scripts/scores-dev.mjs"
   },
   "license": "ISC",
   "dependencies": {
     "kor-lunar": "1.7.0"
   },
   "private": true,
-  "type": "module"
+  "type": "module",
+  "engines": {
+    "node": ">=18"
+  }
 }

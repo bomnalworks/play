@@ -1,10 +1,12 @@
 // 봄날 스도쿠 - 화면·입력 (규칙과 문제 만들기는 logic.js)
 //
-// 기록과 설정은 이 브라우저(localStorage)에만 남고, 서버로 아무것도 보내지 않습니다.
+// 기록과 설정은 이 브라우저(localStorage)에만 남는다.
+// (명예의 전당에 이니셜을 남길 때만 이니셜·기록·날짜를 순위표 서버에 보낸다 - /js/scores.js)
 import { track, store } from '../../js/browser.js'
 import { createSound, bindSoundButton, FANFARE } from '../../js/sound.js'
 import { celebrate } from '../../js/celebrate.js'
 import { mountAd } from '../../js/ad.js'
+import { createHall } from '../../js/scores.js'
 import { createTimer, startTimer, pauseTimer, timerMs, isRunning, formatTime } from '../../js/timer.js'
 import {
   MAX_LEVEL, clampLevel, generateAsync, createBoard, isFixed, legalMask, openMask, has,
@@ -44,6 +46,7 @@ const soundBtn = $('#sound')
 const confetti = $('#confetti')
 
 const Sound = createSound(SOUND_KEY, TUNES)
+const hall = createHall('sudoku')
 
 // 다음에 와도 그대로이길 바라는 설정은 pref, 이번 판에만 쓰는 것은 view
 const pref = { level: 3, candidates: true, ...store.read(PREF_KEY, {}) }
@@ -134,6 +137,7 @@ async function newPuzzle(level) {
   store.write(PREF_KEY, pref)
 
   note(`${pref.level}레벨 문제를 만드는 중…`)
+  hall.show(pref.level)
   lockButtons(true)
 
   const made = await generateAsync(pref.level)
@@ -200,7 +204,10 @@ function finishCheck() {
     track('sudoku_clear')
     Sound.play('fanfare')
     celebrate(confetti, { duration: CELEBRATE_MS })
-    view.nextPuzzle = setTimeout(() => newPuzzle(pref.level), NEXT_AFTER_MS)
+    // 1~5등에 들면 이니셜을 받고, 창을 닫은 뒤에 새 문제로 넘어간다 (그사이 다른 문제를 골랐으면 넘기지 않는다)
+    hall.offer(pref.level, ms).then(() => {
+      if (view.board === board) view.nextPuzzle = setTimeout(() => newPuzzle(pref.level), NEXT_AFTER_MS)
+    })
   } else {
     note('다 채웠지만 틀린 칸이 있어요. 빨간 칸을 다시 보세요.')
   }

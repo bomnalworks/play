@@ -1,10 +1,12 @@
 // 봄날 짝맞추기 - 화면·입력 (규칙은 logic.js)
 //
-// 기록과 설정은 이 브라우저(localStorage)에만 남고, 서버로 아무것도 보내지 않습니다.
+// 기록과 설정은 이 브라우저(localStorage)에만 남는다.
+// (명예의 전당에 이니셜을 남길 때만 이니셜·기록·날짜를 순위표 서버에 보낸다 - /js/scores.js)
 import { track, store } from '../../js/browser.js'
 import { createSound, bindSoundButton, FANFARE } from '../../js/sound.js'
 import { celebrate } from '../../js/celebrate.js'
 import { mountAd } from '../../js/ad.js'
+import { createHall } from '../../js/scores.js'
 import { createTimer, startTimer, pauseTimer, timerMs, isRunning, formatTime } from '../../js/timer.js'
 import { STAGES, MAX_STAGE, THEMES, clampStage, pairsOf, createGame, flip, hideMiss, isFaceUp } from './logic.js'
 
@@ -47,6 +49,7 @@ const soundBtn = $('#sound')
 const confetti = $('#confetti')
 
 const Sound = createSound(SOUND_KEY, TUNES)
+const hall = createHall('memory')
 
 const pref = { stage: 1, theme: THEMES[0].key, ...store.read(PREF_KEY, {}) }
 pref.stage = clampStage(pref.stage)
@@ -105,6 +108,7 @@ function newGame(stage) {
   view.timer = createTimer()
   view.paused = false
   view.started = false
+  hall.show(pref.stage)
 
   const look = LOOK[pref.stage - 1]
   boardBox.style.setProperty('--cols', String(view.game.cols))
@@ -190,7 +194,10 @@ function finish() {
   track('memory_clear')
   Sound.play('fanfare')
   celebrate(confetti, { duration: CELEBRATE_MS })
-  view.nextTimer = setTimeout(() => newGame(next), NEXT_AFTER_MS)
+  // 1~5등에 들면 이니셜을 받고, 창을 닫은 뒤에 다음 단계로 넘어간다 (그사이 다른 판을 골랐으면 넘기지 않는다)
+  hall.offer(pref.stage, ms).then(() => {
+    if (view.game === game) view.nextTimer = setTimeout(() => newGame(next), NEXT_AFTER_MS)
+  })
   render() // 시계가 멈췄으니 '잠깐 멈춤'을 끈다
 }
 

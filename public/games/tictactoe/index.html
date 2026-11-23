@@ -47,7 +47,7 @@
   <h1>봄날 틱택토</h1>
   <p class="lead intro">가로·세로·대각선으로 <strong>내 ○ 세 개를 먼저 잇는 쪽</strong>이 이깁니다. 컴퓨터는 ✕ 를 둡니다.</p>
 
-  <div class="ttt">
+  <div class="ttt play">
     <div class="ttt-pick">
       <div class="ttt-levels" id="levels" role="group" aria-label="난이도 고르기"></div>
       <div class="ttt-sides" id="sides" role="group" aria-label="누가 먼저 둘지 고르기"></div>
@@ -61,8 +61,8 @@
       <button type="button" class="primary" id="new">새 판</button>
     </div>
 
-    <div class="ttt-wrap">
-      <div class="ttt-board" id="board" role="group" aria-label="틱택토 판"></div>
+    <div class="ttt-wrap fit">
+      <div class="ttt-board fit-board" id="board" role="group" aria-label="틱택토 판"></div>
       <canvas class="confetti" id="confetti" aria-hidden="true"></canvas>
     </div>
     <p class="note" id="note" role="status" aria-live="polite"></p>

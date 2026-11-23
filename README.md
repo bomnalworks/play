@@ -25,6 +25,7 @@ public/                  그대로 배포되는 정적 파일 (GitHub Pages 아�
   ad/coupang.html        광고 자리 (비어 있으면 화면에 그려지지 않는다)
 data/2027/<연령대>/<상괘>.json   손으로 쓰는 풀이 원본 조각 (연령대마다 8개)
 data/2027/outline.json   120괘의 등급·이름·상징 (scheme 에서 자동 생성, 빌드 중간물)
+worker/                  순위표 서버 (Cloudflare Worker, 올리는 법은 worker/README.md)
 scripts/                 빌드·검사 스크립트
 tests/                   node --test
 ```
@@ -39,6 +40,7 @@ npm install
 npm test        # 괘 계산 6개 + 데이터·설정 검사 7개
 npm run build   # vendor 사본 + outline + 괘별 풀이 파일 (검사 포함)
 npm run serve   # http://localhost:4173 으로 public/ 띄우기
+npm run scores  # 순위표 시험 서버 http://localhost:8787 (worker/README.md)
 ```
 
 풀이를 고칠 때는 생성물이 아니라 `data/2027/<연령대>/<상괘>.json`을 고치고 `npm run build`를 돌립니다.

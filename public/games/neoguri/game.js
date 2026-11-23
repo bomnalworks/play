@@ -1,8 +1,10 @@
 // 봄날 너구리 - 화면·소리·입력 (게임 규칙은 logic.js, 그림은 skin.js)
 //
-// 최고 점수와 소리 설정은 이 브라우저(localStorage)에만 남고, 서버로 아무것도 보내지 않습니다.
+// 최고 점수와 소리 설정은 이 브라우저(localStorage)에만 남는다.
+// (명예의 전당에 이니셜을 남길 때만 이니셜·점수·날짜를 순위표 서버에 보낸다 - /js/scores.js)
 import { track, store } from '../../js/browser.js'
 import { mountAd } from '../../js/ad.js'
+import { createHall } from '../../js/scores.js'
 import { createSound, bindSoundButton } from '../../js/sound.js'
 import { SKIN, loadSkinImages, paint, drawBackdrop } from './skin.js'
 import { W, H, HUD, WALL, SCORE, createGame, startGame, togglePause, step } from './logic.js'
@@ -45,7 +47,7 @@ const EVENTS = {
   hunger: { tune: 'starve', say: true },
   drop: { tune: 'crash', say: true },
   clear: { tune: 'clear', say: true },
-  over: { tune: 'over', say: true, track: 'game_over', record: true },
+  over: { tune: 'over', say: true, track: 'game_over', record: true, hall: true },
 }
 
 /* ---------- 입력 ---------- */
@@ -66,6 +68,7 @@ const held = (name) => pad[name] || swipe[name] || KEYS[name].some((code) => key
 /* ---------- 상태 ---------- */
 
 let best = store.read(BEST_KEY, 0) || 0
+const hall = createHall('neoguri')
 
 const game = createGame()
 
@@ -74,6 +77,7 @@ function drainEvents() {
     const event = EVENTS[name]
     if (!event) continue
     if (event.tune) Sound.play(event.tune)
+    if (event.hall) hall.offer('all', game.score) // 1~5등에 들면 이니셜을 받는다
     if (event.record && game.score > best) {
       best = game.score
       store.write(BEST_KEY, best)
@@ -267,6 +271,7 @@ bindSoundButton(soundBtn, Sound)
 
 // 광고는 처음부터 게임과 놀이 방법 사이에 둔다 (/js/ad.js)
 mountAd()
+hall.show('all')
 
 /* ---------- 키보드 ---------- */
 

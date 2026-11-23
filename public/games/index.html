@@ -6,7 +6,7 @@
 <!-- 게임 목록은 첫 화면(/)으로 옮겼다. 예전 주소로 들어와도 끊기지 않게 넘긴다 -->
 <link rel="canonical" href="https://play.bomnalworks.com/" />
 <meta http-equiv="refresh" content="0; url=/" />
-<script>location.replace('/')</script>
+<script>location.replace('/' + location.search + location.hash)</script>
 </head>
 <body>
 <p><a href="/">봄날 운세 오락실로 가기</a></p>
