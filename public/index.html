@@ -3,20 +3,21 @@
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>2027년 토정비결 - 봄날 운세 오락실</title>
-<meta name="description" content="생년월일만 넣으면 바로 보는 2027년 토정비결. 생년월일은 서버로 보내지 않고 이 브라우저에서만 계산합니다. 재미로 보는 오락용 운세입니다." />
+<title>봄날 운세 오락실 - 추억의 게임과 2027 토정비결</title>
+<meta name="description" content="설치 없이 브라우저에서 바로 하는 옛 오락실풍 게임과 2027년 토정비결. 봄날웍스가 직접 만들었습니다." />
 <meta name="theme-color" content="#b5573a" />
 <link rel="canonical" href="https://play.bomnalworks.com/" />
 <meta property="og:type" content="website" />
 <meta property="og:site_name" content="봄날 운세 오락실" />
 <meta property="og:locale" content="ko_KR" />
-<meta property="og:title" content="2027년 토정비결 - 봄날 운세 오락실" />
-<meta property="og:description" content="생년월일만 넣으면 바로 보는 2027년 토정비결. 정보는 서버로 보내지 않습니다." />
+<meta property="og:title" content="봄날 운세 오락실 - 추억의 게임과 2027 토정비결" />
+<meta property="og:description" content="설치 없이 브라우저에서 바로 하는 옛 오락실풍 게임." />
 <meta property="og:url" content="https://play.bomnalworks.com/" />
 <meta name="twitter:card" content="summary" />
-<link rel="icon" href="assets/favicon.svg" type="image/svg+xml" />
-<link rel="stylesheet" href="assets/style.css" />
-<!-- 방문 통계(Google 애널리틱스). 생년월일·괘 번호는 보내지 않고, 버튼을 눌렀다는 사실만 남긴다. -->
+<link rel="icon" href="/assets/favicon.svg" type="image/svg+xml" />
+<link rel="stylesheet" href="/assets/style.css" />
+<link rel="stylesheet" href="/assets/game.css" />
+<!-- 방문 통계(Google 애널리틱스) -->
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-VFY32V5YRJ"></script>
 <script>
   window.dataLayer = window.dataLayer || []
@@ -24,15 +25,6 @@
   gtag('js', new Date())
   gtag('config', 'G-VFY32V5YRJ', { anonymize_ip: true })
 </script>
-<script type="importmap">
-{ "imports": { "kor-lunar": "./vendor/kor-lunar.esm.js" } }
-</script>
-<!-- 모듈이 한 줄로 늘어서 받아지지 않도록 한꺼번에 띄운다 -->
-<link rel="modulepreload" href="assets/app.js" />
-<link rel="modulepreload" href="js/browser.js" />
-<link rel="modulepreload" href="js/config.js" />
-<link rel="modulepreload" href="js/tojeong.js" />
-<link rel="modulepreload" href="vendor/kor-lunar.esm.js" />
 </head>
 <body>
 <a class="skip" href="#main">본문으로 건너뛰기</a>
@@ -41,63 +33,96 @@
   <div class="wrap">
     <p class="brand">봄날 운세 오락실</p>
     <nav class="nav" aria-label="메뉴">
-      <a href="/" class="on" aria-current="page">2027 토정비결</a>
-      <a href="/games/">추억의 게임</a>
+      <a href="/" class="on" aria-current="page">추억의 게임</a>
+      <a href="/tojeong/">2027 토정비결</a>
     </nav>
-    <p class="tag">재미로 보는 운세 한 판. 생년월일은 이 브라우저 밖으로 나가지 않습니다.</p>
   </div>
 </header>
 
 <main id="main" class="wrap">
-  <h1>2027 정미년 토정비결</h1>
-  <p class="lead">생년월일만 넣으면 전통 계산법으로 괘를 뽑고, 그 괘에 맞는 한 해 풀이를 보여 줍니다.</p>
+  <h1>추억의 게임</h1>
+  <p class="lead">설치도, 가입도 없습니다. 눌러서 바로 한 판. 점수는 이 브라우저에만 남습니다.</p>
 
-  <section class="card" id="form-card" aria-labelledby="form-title">
-    <h2 id="form-title">생년월일 넣기</h2>
-    <form id="birth-form" novalidate>
-      <fieldset class="row">
-        <legend>생년월일 기준</legend>
-        <label class="chip"><input type="radio" name="calendar" value="solar" checked /><span>양력</span></label>
-        <label class="chip"><input type="radio" name="calendar" value="lunar" /><span>음력</span></label>
-        <label class="chip" id="leap-wrap" hidden><input type="checkbox" name="leap" /><span>윤달</span></label>
-      </fieldset>
-
-      <div class="row dates">
-        <label>년
-          <input type="number" name="year" inputmode="numeric" min="1900" max="2027" placeholder="1990" required />
-        </label>
-        <label>월
-          <input type="number" name="month" inputmode="numeric" min="1" max="12" placeholder="3" required />
-        </label>
-        <label>일
-          <input type="number" name="day" inputmode="numeric" min="1" max="31" placeholder="6" required />
-        </label>
+  <ul class="games">
+    <li>
+      <a href="/games/neoguri/">
+        <img src="/games/shots/neoguri.webp" alt="" width="96" height="96" />
+        <div>
+          <strong>봄날 너구리</strong>
+          <span>구멍을 뛰어넘고 과일을 다 먹는 1982년풍 오락실 게임. 배고픔 막대, 수수께끼 항아리, 뱀과 전갈. PC는 방향키·스페이스, 폰은 화면 버튼으로.</span>
+        </div>
+      </a>
+    </li>
+    <li>
+      <a href="/games/sudoku/">
+        <img src="/games/shots/sudoku.webp" alt="" width="96" height="96" />
+        <div>
+          <strong>봄날 스도쿠</strong>
+          <span>1~10레벨 스도쿠. 넣을 수 있는 숫자만 눌리고, 아닌 숫자는 X 로 지워 가며 풉니다. 타이머와 레벨별 최고 기록.</span>
+        </div>
+      </a>
+    </li>
+    <li>
+      <a href="/games/reversi/">
+        <img src="/games/shots/reversi.webp" alt="" width="96" height="96" />
+        <div>
+          <strong>봄날 리버시</strong>
+          <span>흑백 돌을 뒤집어 더 많이 차지하는 판 놀이. 초급·중급·고급 컴퓨터와 한 판. 둘 곳이 보이고, 되돌리기도 됩니다.</span>
+        </div>
+      </a>
+    </li>
+    <li>
+      <a href="/games/tictactoe/">
+        <img src="/games/shots/tictactoe.webp" alt="" width="96" height="96" />
+        <div>
+          <strong>봄날 틱택토</strong>
+          <span>○✕ 세 줄 잇기. 초급·중급·고급 컴퓨터와 한 판. 고급은 지지 않으니 비기면 잘한 겁니다.</span>
+        </div>
+      </a>
+    </li>
+    <li>
+      <a href="/games/memory/">
+        <img src="/games/shots/memory.webp" alt="" width="96" height="96" />
+        <div>
+          <strong>봄날 짝맞추기</strong>
+          <span>카드 두 장씩 열어 같은 그림 찾기. 2×2부터 6×7까지 5단계, 단계별 최고 시간과 최소 횟수.</span>
+        </div>
+      </a>
+    </li>
+    <li>
+      <a href="/games/plane/">
+        <img src="/games/shots/plane.webp" alt="" width="96" height="96" />
+        <div>
+          <strong>봄날 종이비행기</strong>
+          <span>누르면 오르고 떼면 내려가는 종이비행기로 구불구불한 동굴을 납니다. 벽과 기둥을 피해 얼마나 멀리 갈 수 있을까요.</span>
+        </div>
+      </a>
+    </li>
+    <li class="soon">
+      <div>
+        <div class="shot-empty" aria-hidden="true">?</div>
+        <div>
+          <strong>다음 게임 준비 중</strong>
+          <span>해 보고 싶은 게임이 있으면 contact@bomnalworks.com 으로 알려 주세요.</span>
+        </div>
       </div>
+    </li>
+  </ul>
 
-      <p class="hint">음력 생일을 아는 분은 음력을 고르세요. 모르면 양력으로 두면 됩니다.</p>
-      <p class="error" id="form-error" role="alert" hidden></p>
+  <h2 class="games-sub">운세</h2>
+  <ul class="games">
+    <li>
+      <a href="/tojeong/">
+        <div class="shot-empty shot-text" aria-hidden="true">2027<br />토정비결</div>
+        <div>
+          <strong>2027 토정비결</strong>
+          <span>생년월일만 넣으면 바로 보는 정미년 한 해 운세. 생년월일은 서버로 보내지 않고 이 브라우저에서만 계산합니다.</span>
+        </div>
+      </a>
+    </li>
+  </ul>
 
-      <div class="row actions">
-        <button type="submit" class="primary">2027년 운세 보기</button>
-        <button type="button" id="clear" class="plain" hidden>저장된 생일 지우기</button>
-      </div>
-      <label class="remember"><input type="checkbox" name="remember" checked /><span>이 브라우저에 생일을 저장해 다음에 바로 보기</span></label>
-    </form>
-  </section>
-
-  <section class="card result" id="result" hidden aria-live="polite"></section>
-
-  <section class="card notes" aria-labelledby="notes-title">
-    <h2 id="notes-title">알려 드립니다</h2>
-    <ul>
-      <li><strong>괘 번호</strong>는 전통 토정비결 계산법(상괘·중괘·하괘)을 그대로 따릅니다.</li>
-      <li><strong>풀이 문장</strong>은 봄날웍스가 정한 해석 체계로 AI 도움을 받아 새로 쓴 글입니다. 옛 책이나 다른 사이트의 풀이를 옮기지 않았습니다.</li>
-      <li>운세는 <strong>오락</strong>입니다. 건강·돈·법률 문제는 전문가와 상의하세요.</li>
-      <li>생년월일은 <strong>서버로 보내지 않습니다.</strong> 계산은 이 브라우저 안에서 끝나고, 저장을 선택하면 이 브라우저에만 남습니다.</li>
-      <li>방문 통계를 보려고 <strong>Google 애널리틱스 쿠키</strong>를 씁니다. 어떤 경로로 들어와 어디를 보셨는지만 집계하며,
-        <strong>생년월일·괘 번호·연령대는 보내지 않습니다.</strong> 브라우저 설정에서 쿠키를 막으면 수집되지 않습니다.</li>
-    </ul>
-  </section>
+  <p class="small">방문 통계를 보려고 Google 애널리틱스 쿠키를 씁니다. 어떤 경로로 들어와 어디를 보셨는지만 집계합니다.</p>
 </main>
 
 <footer class="bottom">
@@ -106,7 +131,5 @@
     <p class="small">봄날의곰 (Bomnal Works) · 사업자등록번호 264-01-02496 · contact@bomnalworks.com</p>
   </div>
 </footer>
-
-<script type="module" src="assets/app.js"></script>
 </body>
 </html>

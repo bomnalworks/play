@@ -1,10 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url><loc>https://play.bomnalworks.com/</loc></url>
-  <url><loc>https://play.bomnalworks.com/games/</loc></url>
+  <url><loc>https://play.bomnalworks.com/tojeong/</loc></url>
   <url><loc>https://play.bomnalworks.com/games/neoguri/</loc></url>
   <url><loc>https://play.bomnalworks.com/games/sudoku/</loc></url>
   <url><loc>https://play.bomnalworks.com/games/reversi/</loc></url>
   <url><loc>https://play.bomnalworks.com/games/tictactoe/</loc></url>
   <url><loc>https://play.bomnalworks.com/games/memory/</loc></url>
+  <url><loc>https://play.bomnalworks.com/games/plane/</loc></url>
 </urlset>

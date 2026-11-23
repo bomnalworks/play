@@ -1,0 +1,92 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>봄날 종이비행기 - 봄날 운세 오락실</title>
+<meta name="description" content="누르면 오르고 떼면 내려가는 종이비행기로 구불구불한 동굴을 날아가는 게임. 벽과 기둥을 피해 얼마나 멀리 갈 수 있을까요." />
+<meta name="theme-color" content="#b5573a" />
+<link rel="canonical" href="https://play.bomnalworks.com/games/plane/" />
+<meta property="og:type" content="website" />
+<meta property="og:site_name" content="봄날 운세 오락실" />
+<meta property="og:locale" content="ko_KR" />
+<meta property="og:title" content="봄날 종이비행기 - 봄날 운세 오락실" />
+<meta property="og:description" content="누르면 오르고 떼면 내려가는 종이비행기. 동굴 벽과 기둥을 피해 멀리 날아 보세요." />
+<meta property="og:url" content="https://play.bomnalworks.com/games/plane/" />
+<meta name="twitter:card" content="summary" />
+<link rel="icon" href="/assets/favicon.svg" type="image/svg+xml" />
+<link rel="stylesheet" href="/assets/style.css" />
+<link rel="stylesheet" href="/assets/game.css" />
+<link rel="stylesheet" href="plane.css" />
+<!-- 방문 통계(Google 애널리틱스). 기록이나 조작은 보내지 않고, 시작·끝났다는 사실만 남긴다. -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-VFY32V5YRJ"></script>
+<script>
+  window.dataLayer = window.dataLayer || []
+  function gtag() { dataLayer.push(arguments) }
+  gtag('js', new Date())
+  gtag('config', 'G-VFY32V5YRJ', { anonymize_ip: true })
+</script>
+<link rel="modulepreload" href="ui.js" />
+<link rel="modulepreload" href="logic.js" />
+</head>
+<body>
+<a class="skip" href="#main">본문으로 건너뛰기</a>
+
+<header class="top">
+  <div class="wrap">
+    <p class="brand">봄날 운세 오락실</p>
+    <nav class="nav" aria-label="메뉴">
+      <a href="/" class="on" aria-current="page">추억의 게임</a>
+      <a href="/tojeong/">2027 토정비결</a>
+    </nav>
+  </div>
+</header>
+
+<main id="main" class="wrap">
+  <h1>봄날 종이비행기</h1>
+  <p class="lead intro"><strong>누르고 있으면 오르고, 떼면 내려갑니다.</strong> 동굴 벽과 기둥에 닿지 않고 멀리 날아 보세요.</p>
+
+  <div class="plane">
+    <canvas id="board" class="pl-sky" width="360" height="480" tabindex="0"
+      aria-label="봄날 종이비행기 게임 화면. 누르고 있으면 오르고 떼면 내려갑니다."></canvas>
+    <p id="status" class="sr" role="status" aria-live="polite"></p>
+    <div class="pl-bar">
+      <button type="button" class="primary" id="start">시작</button>
+      <button type="button" class="plain" id="sound" aria-pressed="true">소리 켜짐</button>
+    </div>
+  </div>
+
+  <!-- 광고 자리. 페이지를 열면 바로 쿠팡 광고가 들어온다 (/js/ad.js) -->
+  <div id="ad-here"></div>
+
+  <section class="card howto" aria-labelledby="howto-title">
+    <h2 id="howto-title">놀이 방법</h2>
+    <dl>
+      <dt>날기</dt><dd>게임 화면 <strong>아무 데나 누르고 있으면 오르고, 손을 떼면 내려갑니다.</strong> PC는 스페이스나 ↑ 키, 마우스 왼쪽 버튼을 누르고 있으면 됩니다.</dd>
+      <dt>동굴</dt><dd>위아래 벽과 가운데 기둥에 닿으면 끝입니다. <strong>멀리 갈수록 동굴이 좁아지고 빨라집니다.</strong></dd>
+      <dt>요령</dt><dd>꾹 누르고 있기보다 톡톡 끊어 누르면 높이를 맞추기 쉽습니다. 기둥은 미리 보고 틈이 넓은 쪽으로 옮겨 두세요.</dd>
+      <dt>기록</dt><dd>날아간 거리(m)가 점수입니다. 최고 기록이 이 브라우저에 남습니다.</dd>
+      <dt>자판</dt><dd>스페이스·↑ 날기 · M 소리</dd>
+    </dl>
+  </section>
+
+  <section class="card notes" aria-labelledby="notes-title">
+    <h2 id="notes-title">알려 드립니다</h2>
+    <ul>
+      <li>동굴은 판마다 <strong>이 브라우저에서 새로 만듭니다.</strong> 매번 길이 다릅니다.</li>
+      <li>최고 기록은 <strong>이 브라우저에만</strong> 남습니다. 서버로 보내지 않습니다.</li>
+      <li>방문 통계를 보려고 Google 애널리틱스 쿠키를 씁니다. 시작·끝났다는 사실만 집계하며 <strong>기록이나 조작은 보내지 않습니다.</strong></li>
+    </ul>
+  </section>
+</main>
+
+<footer class="bottom">
+  <div class="wrap">
+    <p>봄날 운세 오락실 · <a href="https://bomnalworks.com" rel="noopener">봄날웍스</a></p>
+    <p class="small">봄날의곰 (Bomnal Works) · 사업자등록번호 264-01-02496 · contact@bomnalworks.com</p>
+  </div>
+</footer>
+
+<script type="module" src="ui.js"></script>
+</body>
+</html>

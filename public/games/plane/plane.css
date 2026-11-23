@@ -1,0 +1,26 @@
+/* 봄날 종이비행기 전용. 이 게임 말고는 아무 데서도 안 읽는다 (이름은 pl- 로 시작) */
+
+.plane { max-width: 400px; margin: 0 auto 18px; }
+
+.pl-sky {
+  display: block; width: 100%; height: auto; aspect-ratio: 360 / 480; margin: 0 auto;
+  background: #1c1714; border: 1px solid var(--line); border-radius: 12px;
+  touch-action: none; /* 누르고 있어도 화면이 밀리거나 확대되지 않게 */
+  user-select: none; -webkit-user-select: none; -webkit-touch-callout: none;
+  cursor: pointer;
+}
+.pl-sky:focus-visible { outline: 2px solid var(--brand-2); outline-offset: 2px; }
+
+.pl-bar { display: flex; gap: 8px; justify-content: center; margin: 10px 0 0; }
+.pl-bar button { padding: 9px 18px; font-size: 0.92rem; }
+
+/* 폰: 아래 버튼 줄까지 한 화면에 들어오게 게임 화면을 줄인다.
+   --pl-chrome = 판 말고 나머지 높이 (재는 법은 game.css) */
+@media (max-width: 600px) {
+  .plane { --pl-chrome: 158px; }
+  .pl-sky {
+    max-width: max(240px, calc((100vh - var(--pl-chrome)) * 360 / 480));
+    max-width: max(240px, calc((100svh - var(--pl-chrome)) * 360 / 480)); /* 100svh 를 모르는 브라우저는 위 줄을 쓴다 */
+  }
+  .pl-bar { margin-top: 8px; }
+}

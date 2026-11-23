@@ -12,8 +12,10 @@
 
 ```
 public/                  그대로 배포되는 정적 파일 (GitHub Pages 아티팩트)
-  index.html
-  assets/app.js          화면 로직 (입력 → 괘 계산 → 풀이 표시)
+  index.html             첫 화면 - 오락실(게임 목록)
+  tojeong/index.html     2027 토정비결
+  games/<게임>/          게임마다 한 폴더 (games/index.html 은 예전 주소라 첫 화면으로 넘긴다)
+  assets/app.js          토정비결 화면 로직 (입력 → 괘 계산 → 풀이 표시)
   assets/style.css       봄날웍스 홈페이지와 같은 종이색·흙색
   js/tojeong.js          괘 계산 모듈 (테스트와 브라우저가 같이 쓴다)
   js/config.js           연도·연령대 구분 (scheme.json 에서 자동 생성)

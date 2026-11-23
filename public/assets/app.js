@@ -84,7 +84,7 @@ async function show(birth) {
   errorBox.textContent = ''
   const cast = castGwae(birth, YEAR)
   const group = groupOf(cast.detail.age)
-  const reading = await load(`data/${YEAR}/${group.key}/${cast.gwae}.json`)
+  const reading = await load(`/data/${YEAR}/${group.key}/${cast.gwae}.json`)
   render({ cast, group, reading })
   track('view_result')
 }
