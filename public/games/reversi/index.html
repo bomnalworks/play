@@ -1,0 +1,112 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>봄날 리버시 - 봄날 운세 오락실</title>
+<meta name="description" content="흑백 돌을 뒤집어 더 많이 차지하는 리버시. 초급·중급·고급 컴퓨터와 한 판. 둘 수 있는 자리가 보이고, 되돌리기도 됩니다." />
+<meta name="theme-color" content="#b5573a" />
+<link rel="canonical" href="https://play.bomnalworks.com/games/reversi/" />
+<meta property="og:type" content="website" />
+<meta property="og:site_name" content="봄날 운세 오락실" />
+<meta property="og:locale" content="ko_KR" />
+<meta property="og:title" content="봄날 리버시 - 봄날 운세 오락실" />
+<meta property="og:description" content="흑백 돌 뒤집기. 초급·중급·고급 컴퓨터와 한 판." />
+<meta property="og:url" content="https://play.bomnalworks.com/games/reversi/" />
+<meta name="twitter:card" content="summary" />
+<link rel="icon" href="/assets/favicon.svg" type="image/svg+xml" />
+<link rel="stylesheet" href="/assets/style.css" />
+<link rel="stylesheet" href="/assets/game.css" />
+<link rel="stylesheet" href="reversi.css" />
+<!-- 방문 통계(Google 애널리틱스). 수나 결과는 보내지 않고, 시작·끝냈다는 사실만 남긴다. -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-VFY32V5YRJ"></script>
+<script>
+  window.dataLayer = window.dataLayer || []
+  function gtag() { dataLayer.push(arguments) }
+  gtag('js', new Date())
+  gtag('config', 'G-VFY32V5YRJ', { anonymize_ip: true })
+</script>
+<link rel="modulepreload" href="ui.js" />
+<link rel="modulepreload" href="logic.js" />
+<link rel="modulepreload" href="/js/celebrate.js" />
+</head>
+<body>
+<a class="skip" href="#main">본문으로 건너뛰기</a>
+
+<header class="top">
+  <div class="wrap">
+    <p class="brand">봄날 운세 오락실</p>
+    <nav class="nav" aria-label="메뉴">
+      <a href="/">2027 토정비결</a>
+      <a href="/games/" class="on" aria-current="page">추억의 게임</a>
+    </nav>
+  </div>
+</header>
+
+<main id="main" class="wrap">
+  <h1>봄날 리버시</h1>
+  <p class="lead intro">상대 돌을 내 돌 사이에 끼우면 내 색으로 뒤집힙니다. 판이 다 찼을 때 <strong>돌이 더 많은 쪽</strong>이 이깁니다.</p>
+
+  <div class="reversi">
+    <div class="rv-pick">
+      <div class="rv-levels" id="levels" role="group" aria-label="난이도 고르기"></div>
+      <div class="rv-sides" id="sides" role="group" aria-label="내 돌 고르기"></div>
+    </div>
+
+    <div class="rv-bar">
+      <span class="rv-count" id="count-black"><i class="rv-chip black" aria-hidden="true"></i><b>2</b></span>
+      <span class="rv-count" id="count-white"><i class="rv-chip white" aria-hidden="true"></i><b>2</b></span>
+      <span class="rv-turn" id="turn"></span>
+      <span class="spacer"></span>
+      <button type="button" class="primary" id="new">새 판</button>
+    </div>
+
+    <div class="rv-wrap">
+      <div class="rv-board" id="board" role="group" aria-label="리버시 판"></div>
+      <canvas class="confetti" id="confetti" aria-hidden="true"></canvas>
+    </div>
+    <p class="note" id="note" role="status" aria-live="polite"></p>
+
+    <div class="tools">
+      <button type="button" class="plain" id="undo">되돌리기</button>
+      <button type="button" class="plain" id="hints" aria-pressed="true">둘 곳 보기</button>
+      <button type="button" class="plain" id="sound" aria-pressed="true">소리 켜짐</button>
+    </div>
+    <p class="rv-record" id="record"></p>
+  </div>
+
+  <!-- 광고 자리. 페이지를 열면 바로 쿠팡 광고가 들어온다 (/js/ad.js) -->
+  <div id="ad-here"></div>
+
+  <section class="card howto" aria-labelledby="howto-title">
+    <h2 id="howto-title">놀이 방법</h2>
+    <dl>
+      <dt>두기</dt><dd>점이 찍힌 칸에만 둘 수 있습니다. 가로·세로·대각선으로 상대 돌을 내 돌 사이에 끼우면 <strong>끼인 돌이 모두 뒤집힙니다.</strong></dd>
+      <dt>넘기기</dt><dd>둘 곳이 없으면 차례가 저절로 넘어갑니다. 둘 다 둘 곳이 없으면 판이 끝납니다.</dd>
+      <dt>난이도</dt><dd><strong>초급</strong>은 눈앞의 돌만 봅니다. <strong>중급</strong>은 두 수 앞을, <strong>고급</strong>은 열 수 가까이 앞을 내다보고 끝판은 끝까지 읽습니다.</dd>
+      <dt>내 돌</dt><dd>흑이 먼저 둡니다. 백을 고르면 컴퓨터가 먼저 둡니다.</dd>
+      <dt>요령</dt><dd>네 귀퉁이는 한 번 잡으면 다시 뒤집히지 않습니다. 귀퉁이 바로 옆자리는 상대에게 귀를 내주기 쉽습니다.</dd>
+      <dt>되돌리기</dt><dd>내가 마지막으로 둔 수 직전으로 돌아갑니다. 몇 번이고 됩니다.</dd>
+    </dl>
+  </section>
+
+  <section class="card notes" aria-labelledby="notes-title">
+    <h2 id="notes-title">알려 드립니다</h2>
+    <ul>
+      <li>컴퓨터 상대는 <strong>이 브라우저 안에서</strong> 생각합니다. 서버로 아무것도 보내지 않습니다.</li>
+      <li>난이도별 전적은 <strong>이 브라우저에만</strong> 남습니다.</li>
+      <li>방문 통계를 보려고 Google 애널리틱스 쿠키를 씁니다. 시작·끝냈다는 사실만 집계하며 <strong>수나 결과는 보내지 않습니다.</strong></li>
+    </ul>
+  </section>
+</main>
+
+<footer class="bottom">
+  <div class="wrap">
+    <p>봄날 운세 오락실 · <a href="https://bomnalworks.com" rel="noopener">봄날웍스</a></p>
+    <p class="small">봄날의곰 (Bomnal Works) · 사업자등록번호 264-01-02496 · contact@bomnalworks.com</p>
+  </div>
+</footer>
+
+<script type="module" src="ui.js"></script>
+</body>
+</html>

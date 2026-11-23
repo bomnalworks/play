@@ -1,4 +1,4 @@
-// 봄날 스도쿠 규칙 검사 — 화면 없이 logic.js 만 돌려 본다
+// 봄날 스도쿠 규칙 검사 - 화면 없이 logic.js 만 돌려 본다
 import test from 'node:test'
 import assert from 'node:assert/strict'
 import {
@@ -88,7 +88,7 @@ test('쉬운 레벨은 싱글(한 칸에 하나·한 줄에 하나)만으로 끝
   }
 })
 
-test('넣을 수 있는 숫자만 나온다 — 같은 줄·칸·상자에 있는 숫자는 빠진다', () => {
+test('넣을 수 있는 숫자만 나온다 - 같은 줄·칸·상자에 있는 숫자는 빠진다', () => {
   const made = generate(4)
   const board = createBoard(made)
   for (let i = 0; i < 81; i++) {

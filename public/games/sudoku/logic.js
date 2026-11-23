@@ -1,4 +1,4 @@
-// 봄날 스도쿠 — 규칙·문제 만들기·난이도 판정 (화면은 ui.js)
+// 봄날 스도쿠 - 규칙·문제 만들기·난이도 판정 (화면은 ui.js)
 //
 // 여기에는 DOM 이 없습니다. 브라우저 없이 그대로 돌려 볼 수 있고,
 // tests/sudoku.test.js 가 이 파일만 불러 "답이 하나뿐인가"·"난이도가 레벨에 맞는가"를 검사합니다.
@@ -83,7 +83,7 @@ export function countSolutions(grid, limit = 2, rnd = null) {
   let first = null
 
   const search = () => {
-    // 후보가 가장 적은 칸부터 — 이게 있어야 빠르다
+    // 후보가 가장 적은 칸부터 - 이게 있어야 빠르다
     let best = -1
     let bestMask = 0
     let bestCount = 10
@@ -268,7 +268,7 @@ function hiddenPair(cand) {
 }
 
 // 어떤 수가 두 가로줄에서 똑같은 두 세로줄에만 들어갈 수 있으면, 그 세로줄의 다른 칸에서 지운다.
-// 한 번이라도 지우면 바로 물러난다 — 자리 목록을 패스 시작에 한 번만 모으므로,
+// 한 번이라도 지우면 바로 물러난다 - 자리 목록을 패스 시작에 한 번만 모으므로,
 // 계속 돌면 이미 지운 후보를 세어 엉뚱한 칸을 지울 수 있다.
 const X_WING_AXES = [
   [ROWS, COL_OF, ROW_OF],
@@ -477,7 +477,7 @@ function pack(level, best, solution) {
 }
 
 // 사다리를 여러 개 만들어 목표에 가장 가까운 판을 고른다.
-// yield 는 "여기서 숨 돌려도 된다"는 표시 — 화면 쪽(generateAsync)만 실제로 쉰다.
+// yield 는 "여기서 숨 돌려도 된다"는 표시 - 화면 쪽(generateAsync)만 실제로 쉰다.
 function* search(level, tries, rnd) {
   let best = null
   let solution = null
@@ -565,7 +565,7 @@ export function toggleMark(board, i, d) {
   return true
 }
 
-// 지금 이 칸에 손댈 수 있나 (화면이 버튼을 켜고 끌 때 쓴다 — 규칙은 여기 한 곳)
+// 지금 이 칸에 손댈 수 있나 (화면이 버튼을 켜고 끌 때 쓴다 - 규칙은 여기 한 곳)
 export const canErase = (board, i) => !board.done && i >= 0 && !isFixed(board, i) && !!board.grid[i]
 export const canUndo = (board) => !board.done && board.history.length > 0
 
@@ -597,6 +597,6 @@ export function checkDone(board) {
 export const wrongCells = (board) =>
   [...board.grid].map((v, i) => (v && v !== board.solution[i] ? i : -1)).filter((i) => i >= 0)
 
-// 빈칸인데 넣을 수 있는 수가 하나도 없는 칸 (막힌 자리 — 앞에서 잘못 넣었다는 뜻)
+// 빈칸인데 넣을 수 있는 수가 하나도 없는 칸 (막힌 자리 - 앞에서 잘못 넣었다는 뜻)
 export const stuckCells = (board) =>
   [...board.grid].map((v, i) => (!v && legalMask(board, i) === 0 ? i : -1)).filter((i) => i >= 0)

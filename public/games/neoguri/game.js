@@ -1,4 +1,4 @@
-// 봄날 너구리 — 화면·소리·입력 (게임 규칙은 logic.js, 그림은 skin.js)
+// 봄날 너구리 - 화면·소리·입력 (게임 규칙은 logic.js, 그림은 skin.js)
 //
 // 최고 점수와 소리 설정은 이 브라우저(localStorage)에만 남고, 서버로 아무것도 보내지 않습니다.
 import { track, store } from '../../js/browser.js'
@@ -6,6 +6,7 @@ import { mountAd } from '../../js/ad.js'
 import { createSound, bindSoundButton } from '../../js/sound.js'
 import { SKIN, loadSkinImages, paint, drawBackdrop } from './skin.js'
 import { W, H, HUD, WALL, SCORE, createGame, startGame, togglePause, step } from './logic.js'
+import { nextSwipe, swipeKeys, TAP_MS } from './touch.js'
 
 const BEST_KEY = 'bomnal-neoguri-best-v1'
 const SOUND_KEY = 'bomnal-neoguri-sound-v1'
@@ -51,6 +52,7 @@ const EVENTS = {
 
 const keys = new Set()
 const pad = { left: false, right: false, up: false, down: false }
+const swipe = { left: false, right: false, up: false, down: false } // 게임 화면을 밀어서 누르고 있는 방향
 let jumpEdge = false // 한 번 누름 = 한 번 점프
 
 const KEYS = {
@@ -59,7 +61,7 @@ const KEYS = {
   up: ['ArrowUp', 'KeyW'],
   down: ['ArrowDown', 'KeyS'],
 }
-const held = (name) => pad[name] || KEYS[name].some((code) => keys.has(code))
+const held = (name) => pad[name] || swipe[name] || KEYS[name].some((code) => keys.has(code))
 
 /* ---------- 상태 ---------- */
 
@@ -198,7 +200,7 @@ function drawHud() {
   ctx.fillStyle = '#e0906f'
   ctx.fillText('♥'.repeat(Math.max(0, game.lives)), W - 12, 26)
 
-  // 배고픔 — 다 줄기 전에 한 판을 끝내야 한다
+  // 배고픔 - 다 줄기 전에 한 판을 끝내야 한다
   const left = Math.max(0, Math.min(1, game.hunger))
   ctx.fillStyle = '#2a211a'
   ctx.fillRect(WALL, HUD - 7, W - WALL * 2, 5)
@@ -250,6 +252,12 @@ function begin() {
   canvas.focus()
 }
 
+// 뛰기 입력(스페이스·뛰기 버튼·화면 톡)은 모두 여기로 - 시작·끝 화면에서는 새 판을 연다
+function pressJump() {
+  if (game.phase === 'ready' || game.phase === 'over') begin()
+  else jumpEdge = true
+}
+
 startBtn.addEventListener('click', begin)
 pauseBtn.addEventListener('click', () => {
   togglePause(game)
@@ -270,10 +278,7 @@ window.addEventListener('keydown', (e) => {
   const onControl = e.target instanceof Element && e.target.closest('button, a, input')
   if (onControl && (e.code === 'Space' || e.code === 'Enter')) return
   if (GAME_KEYS.has(e.code)) e.preventDefault() // 화살표·스페이스로 화면이 밀리지 않게
-  if (e.code === 'Space') {
-    if (game.phase === 'ready' || game.phase === 'over') begin()
-    else if (!keys.has('Space')) jumpEdge = true
-  }
+  if (e.code === 'Space' && !keys.has('Space')) pressJump() // 누르고 있는 동안 되풀이되는 keydown 은 무시
   if (e.code === 'KeyP') pauseBtn.click()
   if (e.code === 'KeyM') soundBtn.click()
   keys.add(e.code)
@@ -282,6 +287,8 @@ window.addEventListener('keyup', (e) => keys.delete(e.code))
 window.addEventListener('blur', () => {
   keys.clear()
   for (const k of Object.keys(pad)) pad[k] = false
+  releaseSwipe()
+  touch = null // 손을 뗐다는 소식을 못 받고 돌아와도 다음 손가락을 받는다
 })
 
 /* ---------- 터치 조작판 ---------- */
@@ -291,9 +298,7 @@ for (const btn of document.querySelectorAll('[data-key]')) {
   const press = (on) => (e) => {
     e.preventDefault()
     if (key === 'jump') {
-      if (!on) return
-      if (game.phase === 'ready' || game.phase === 'over') begin()
-      else jumpEdge = true
+      if (on) pressJump()
       return
     }
     pad[key] = on
@@ -304,6 +309,58 @@ for (const btn of document.querySelectorAll('[data-key]')) {
   btn.addEventListener('pointerleave', press(false))
   btn.addEventListener('contextmenu', (e) => e.preventDefault())
 }
+
+/* ---------- 게임 화면 밀기 (폰) ----------
+   좌우로 밀면 손을 뗄 때까지 걷고, 위아래로 밀면 사다리, 위쪽 대각선은 그쪽으로 점프, 톡 치면 제자리 점프.
+   방향을 읽을 때마다 기준점을 손가락 위치로 옮겨, 밀던 중에 방향을 바꾸면 바로 따라간다. */
+
+let touch = null // { id, x, y, t, dir } - 화면에 대고 있는 손가락 하나. dir 이 없으면 아직 안 민 것(톡 치기 후보)
+let overAt = 0 // 판이 끝난 때 - 톡톡 뛰다가 끝나면 바로 다음 톡에 끝 화면이 넘어가지 않게
+const OVER_HOLD_MS = 700
+
+function holdSwipe(dir) {
+  const { hold, jump } = swipeKeys(dir)
+  Object.assign(swipe, hold)
+  if (jump) jumpEdge = true
+}
+function releaseSwipe() {
+  Object.assign(swipe, swipeKeys(null).hold)
+}
+
+canvas.addEventListener('pointerdown', (e) => {
+  // 마우스는 PC 의 키보드 조작을 돕는 클릭일 뿐이다 (누르면 뛰거나 판이 시작되면 곤란하다)
+  if (touch || e.pointerType === 'mouse' || e.button !== 0) return // 두 번째 손가락도 무시
+  e.preventDefault()
+  try {
+    canvas.setPointerCapture(e.pointerId) // 손가락이 화면 밖으로 나가도 계속 받는다
+  } catch {
+    /* 잡지 못해도 화면 안에서는 그대로 된다 */
+  }
+  touch = { id: e.pointerId, x: e.clientX, y: e.clientY, t: performance.now(), dir: null }
+})
+canvas.addEventListener('pointermove', (e) => {
+  if (!touch || e.pointerId !== touch.id) return
+  const dir = nextSwipe(touch.dir, e.clientX - touch.x, e.clientY - touch.y)
+  if (!dir) return
+  touch.x = e.clientX
+  touch.y = e.clientY
+  if (dir === touch.dir) return // 같은 쪽으로 계속 밀면 그대로 (대각선을 길게 밀어도 한 번만 뛴다)
+  touch.dir = dir
+  holdSwipe(dir) // 판이 멈춘 사이(맞음·통과)에도 손가락 방향을 따라 둔다 - 규칙 쪽이 그동안은 입력을 안 본다
+})
+function endTouch(e) {
+  if (!touch || e.pointerId !== touch.id) return
+  const tap = !touch.dir && performance.now() - touch.t < TAP_MS
+  touch = null
+  releaseSwipe()
+  if (!tap || e.type !== 'pointerup') return
+  if (game.phase === 'over' && performance.now() - overAt < OVER_HOLD_MS) return
+  pressJump()
+}
+canvas.addEventListener('pointerup', endTouch)
+canvas.addEventListener('pointercancel', endTouch)
+canvas.addEventListener('lostpointercapture', endTouch) // 손을 뗀 소식이 다른 데로 새도 여기서 끝낸다
+canvas.addEventListener('contextmenu', (e) => e.preventDefault())
 
 /* ---------- 돌리기 ---------- */
 
@@ -327,6 +384,7 @@ function frame(ts) {
   // 단계 통과·되살아남은 알림 없이 넘어간다. 버튼 상태를 여기서 맞춘다.
   if (game.phase !== lastPhase) {
     lastPhase = game.phase
+    if (game.phase === 'over') overAt = performance.now()
     say()
   }
   // 시작·멈춤·끝 화면은 그림이 그대로다. 바뀐 게 없으면 다시 칠하지 않는다.

@@ -1,9 +1,9 @@
-// 봄날 너구리 — 게임 규칙만 담은 부분 (화면·소리·입력은 game.js)
+// 봄날 너구리 - 게임 규칙만 담은 부분 (화면·소리·입력은 game.js)
 //
 // 여기에는 DOM 이 없습니다. 그래서 브라우저 없이도 그대로 돌려 볼 수 있고,
 // tests/neoguri.test.js 가 이 파일만 불러 사다리·구멍·충돌·단계 넘김을 검사합니다.
 //
-// 1982년 오락실 너구리(ポンポコ)의 규칙을 따릅니다 — 층마다 뚫린 구멍을 뛰어넘고,
+// 1982년 오락실 너구리(ポンポコ)의 규칙을 따릅니다 - 층마다 뚫린 구멍을 뛰어넘고,
 // 과일을 다 먹어야 다음 판으로 가며, 배가 고파지기 전에 끝내야 합니다.
 // 그림·소리·판 모양은 전부 새로 만든 것이고 원작 자료는 쓰지 않았습니다.
 
@@ -281,7 +281,7 @@ function ladderAt(ladders, cx, floor, dir) {
 
 /* ---------- 한 걸음 ---------- */
 
-// input: { left, right, up, down, jump } — jump 은 "이번 걸음에 새로 눌렸다"는 뜻
+// input: { left, right, up, down, jump } - jump 은 "이번 걸음에 새로 눌렸다"는 뜻
 export function step(g, dt, input) {
   g.t += dt
 
@@ -380,7 +380,7 @@ function movePlayer(g, dt, input) {
       p.state = 'air'
       emit(g, 'jump')
     } else if (!solidAt(g.stageData, p.floor, cx)) {
-      p.vy = 0 // 구멍 위로 걸어 나갔다 — 아래층으로 떨어진다
+      p.vy = 0 // 구멍 위로 걸어 나갔다 - 아래층으로 떨어진다
       p.state = 'air'
       emit(g, 'fall')
     } else {
@@ -478,7 +478,7 @@ function collect(g) {
     if (pot.taken || !hits(pb, pot.box)) continue
     pot.taken = true
     if (pot.snake) {
-      // 뱀이 튀어나온다 — 항아리가 있던 자리에서 바로.
+      // 뱀이 튀어나온다 - 항아리가 있던 자리에서 바로.
       // 발밑에서 나오니 잠깐 달아날 틈을 주지 않으면 그 자리에서 바로 죽는다.
       const x = clamp(pot.x, WALL, W - WALL - BOX.snake.w)
       g.stageData.enemies.push({ ...makeEnemy('snake', pot.floor, g.stageData.gaps, x), cool: 1 })

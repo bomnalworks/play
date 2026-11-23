@@ -1,0 +1,67 @@
+/* 봄날 틱택토 전용. 이 게임 말고는 아무 데서도 안 읽는다 (이름은 ttt- 로 시작) */
+
+.ttt {
+  --ttt-o: var(--brand-2);
+  --ttt-x: #4a6b8a;
+  max-width: 380px; margin: 0 auto 18px;
+}
+@media (prefers-color-scheme: dark) { .ttt { --ttt-x: #8fb3d4; } }
+
+.ttt-pick { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 12px; }
+.ttt-levels, .ttt-sides { display: flex; gap: 4px; }
+.ttt-levels { flex: 1 1 170px; }
+.ttt-sides { flex: 1 1 180px; }
+.ttt-opt { flex: 1; font-size: 0.9rem; padding: 7px 4px; white-space: nowrap; }
+
+.ttt-score { display: flex; align-items: center; gap: 14px; margin-bottom: 10px; font-size: 0.95rem; color: var(--ink-soft); }
+.ttt-score b { font-size: 1.3rem; color: var(--ink); font-variant-numeric: tabular-nums; margin-right: 2px; }
+.ttt-score .spacer { flex: 1; }
+.ttt-score button { padding: 7px 12px; font-size: 0.85rem; }
+
+/* 판 - 칸 사이 틈으로 선을 그린다 */
+.ttt-wrap { position: relative; }
+.ttt-board {
+  display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px;
+  background: var(--line); border-radius: 12px; overflow: hidden;
+  touch-action: manipulation;
+}
+.ttt-cell {
+  aspect-ratio: 1; padding: 14%; border: 0; border-radius: 0;
+  background: var(--paper-up); cursor: pointer;
+}
+.ttt-cell:disabled { cursor: default; }
+.ttt-cell:hover:not(:disabled) { background: var(--brand-soft); }
+.ttt-cell:focus-visible { outline: 3px solid var(--brand-2); outline-offset: -3px; }
+.ttt-cell.win { background: color-mix(in srgb, var(--brand-soft) 60%, var(--paper-up)); }
+.ttt-board.over .ttt-cell:not(.win) svg { opacity: 0.35; }
+
+.ttt-cell svg { display: block; width: 100%; height: 100%; overflow: visible; }
+.ttt-cell path, .ttt-cell circle { fill: none; stroke-width: 11; stroke-linecap: round; }
+.ttt-cell .o circle { stroke: var(--ttt-o); }
+.ttt-cell .x path { stroke: var(--ttt-x); }
+/* 펜으로 그리듯 */
+.ttt-cell .draw circle, .ttt-cell .draw path { stroke-dasharray: 260; stroke-dashoffset: 260; animation: ttt-draw 0.28s ease-out forwards; }
+.ttt-cell .draw path + path { animation-delay: 0.12s; }
+@keyframes ttt-draw { to { stroke-dashoffset: 0; } }
+@media (prefers-reduced-motion: reduce) {
+  .ttt-cell .draw circle, .ttt-cell .draw path { animation: none; stroke-dashoffset: 0; }
+}
+
+.ttt-record { margin: 10px 0 0; font-size: 0.85rem; color: var(--ink-soft); text-align: center; }
+
+/* 폰: 판 위아래 버튼·안내까지 한 화면에 들어오게 판을 줄인다.
+   --ttt-chrome = 판 말고 나머지 높이 (재는 법은 game.css) */
+@media (max-width: 600px) {
+  .ttt { --ttt-chrome: 307px; }
+  /* 난이도·먼저 두기를 한 줄로 (좁은 폰에서 두 줄로 꺾이면 판이 그만큼 작아진다) */
+  .ttt-pick { flex-wrap: nowrap; gap: 6px; margin-bottom: 8px; }
+  .ttt-levels { flex: 1 1 0; }
+  .ttt-sides { flex: 1.25 1 0; }
+  .ttt-opt { font-size: 0.82rem; padding: 7px 2px; }
+  .ttt-score { margin-bottom: 6px; }
+  .ttt-wrap {
+    max-width: max(200px, calc(100vh - var(--ttt-chrome)));
+    max-width: max(200px, calc(100svh - var(--ttt-chrome))); /* 100svh 를 모르는 브라우저는 위 줄을 쓴다 */
+    margin: 0 auto;
+  }
+}

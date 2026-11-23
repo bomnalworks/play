@@ -1,0 +1,80 @@
+/* 봄날 리버시 전용. 이 게임 말고는 아무 데서도 안 읽는다 (이름은 rv- 로 시작) */
+
+.reversi {
+  --rv-felt: #4d7a3c;
+  --rv-felt-line: #2f5225;
+  --rv-black: #1f1c1a;
+  --rv-white: #f7f3ec;
+  max-width: 440px; margin: 0 auto 18px;
+}
+@media (prefers-color-scheme: dark) {
+  .reversi { --rv-felt: #3c6230; --rv-felt-line: #22391b; }
+}
+
+.rv-pick { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 12px; }
+.rv-levels, .rv-sides { display: flex; gap: 4px; }
+.rv-levels { flex: 3 1 200px; }
+.rv-sides { flex: 2 1 140px; }
+.rv-opt { flex: 1; font-size: 0.9rem; padding: 7px 0; }
+
+.rv-bar { display: flex; align-items: center; gap: 12px; margin-bottom: 10px; }
+.rv-bar .spacer { flex: 1; }
+.rv-bar button { padding: 7px 12px; font-size: 0.85rem; }
+.rv-count { display: inline-flex; align-items: center; gap: 6px; font-size: 1.25rem; font-variant-numeric: tabular-nums; }
+.rv-count b { min-width: 1.4em; }
+.rv-count.now b { color: var(--brand); }
+.rv-turn { font-size: 0.85rem; color: var(--ink-soft); }
+.rv-chip { display: inline-block; width: 18px; height: 18px; border-radius: 50%; }
+.rv-chip.black { background: var(--rv-black); }
+.rv-chip.white { background: var(--rv-white); box-shadow: inset 0 0 0 1px #b9b0a3; }
+
+/* 판 - 칸 사이 틈으로 선을 그린다 */
+.rv-wrap { position: relative; }
+.rv-board {
+  display: grid; grid-template-columns: repeat(8, 1fr); gap: 1px;
+  background: var(--rv-felt-line); border: 3px solid var(--rv-felt-line); border-radius: 8px;
+  touch-action: manipulation;
+}
+.rv-cell {
+  position: relative; aspect-ratio: 1; padding: 0; border: 0; border-radius: 0;
+  background: var(--rv-felt); cursor: default;
+}
+.rv-cell.can { cursor: pointer; }
+.rv-cell.can::after {
+  content: ''; position: absolute; inset: 40%; border-radius: 50%;
+  background: rgba(0, 0, 0, 0.28);
+}
+.rv-cell.can:hover::after { inset: 14%; background: rgba(0, 0, 0, 0.18); }
+.rv-cell:focus-visible { outline: 3px solid #e0b35a; outline-offset: -3px; }
+
+.rv-disc { position: absolute; inset: 9%; border-radius: 50%; }
+.rv-disc.black { background: radial-gradient(circle at 35% 30%, #4a4440, var(--rv-black) 60%); box-shadow: 0 2px 2px rgba(0, 0, 0, 0.35); }
+.rv-disc.white { background: radial-gradient(circle at 35% 30%, #fff, var(--rv-white) 55%, #ddd5c8); box-shadow: 0 2px 2px rgba(0, 0, 0, 0.3); }
+/* 방금 둔 수 */
+.rv-cell.last .rv-disc::after {
+  content: ''; position: absolute; inset: 40%; border-radius: 50%; background: #d1553a;
+}
+.rv-disc.flip { animation: rv-flip 0.32s ease-out; }
+.rv-disc.drop { animation: rv-drop 0.18s ease-out; }
+@keyframes rv-flip { 0% { transform: scaleX(1); } 50% { transform: scaleX(0.05); } 100% { transform: scaleX(1); } }
+@keyframes rv-drop { from { transform: scale(0.6); opacity: 0.4; } to { transform: scale(1); opacity: 1; } }
+@media (prefers-reduced-motion: reduce) { .rv-disc.flip, .rv-disc.drop { animation: none; } }
+
+.rv-record { margin: 10px 0 0; font-size: 0.85rem; color: var(--ink-soft); text-align: center; }
+
+/* 폰: 판 위아래 버튼·안내까지 한 화면에 들어오게 판을 줄인다.
+   --rv-chrome = 판 말고 나머지 높이 (재는 법은 game.css) */
+@media (max-width: 600px) {
+  .reversi { --rv-chrome: 307px; }
+  /* 난이도·돌 고르기를 한 줄로 (좁은 폰에서 두 줄로 꺾이면 판이 그만큼 작아진다) */
+  .rv-pick { flex-wrap: nowrap; gap: 6px; margin-bottom: 8px; }
+  .rv-levels { flex: 3 1 0; }
+  .rv-sides { flex: 2.2 1 0; }
+  .rv-opt { font-size: 0.82rem; padding: 7px 2px; }
+  .rv-bar { margin-bottom: 6px; }
+  .rv-wrap {
+    max-width: max(220px, calc(100vh - var(--rv-chrome)));
+    max-width: max(220px, calc(100svh - var(--rv-chrome))); /* 100svh 를 모르는 브라우저는 위 줄을 쓴다 */
+    margin: 0 auto;
+  }
+}

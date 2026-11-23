@@ -75,6 +75,6 @@ test('한 연령대 안에서 한 줄 요약이 거의 겹치지 않는다', () 
   for (const group of groups) {
     const sums = loadGroup(group).entries.map((e) => e.summary)
     const dup = sums.filter((s, i) => sums.indexOf(s) !== i)
-    assert.ok(dup.length <= 6, `${group}: 겹치는 요약 ${dup.length}개 — ${[...new Set(dup)].join(', ')}`)
+    assert.ok(dup.length <= 6, `${group}: 겹치는 요약 ${dup.length}개 - ${[...new Set(dup)].join(', ')}`)
   }
 })

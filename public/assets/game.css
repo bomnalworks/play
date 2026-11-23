@@ -1,8 +1,28 @@
 /* 게임 페이지들이 함께 쓰는 것만 둔다.
-   한 게임에만 있는 이름(판·칸·조작판…)은 그 게임 폴더의 시트로 보낸다 — 다음 게임과 부딪치지 않게. */
+   한 게임에만 있는 이름(판·칸·조작판…)은 그 게임 폴더의 시트로 보낸다 - 다음 게임과 부딪치지 않게. */
 button { -webkit-tap-highlight-color: transparent; }
 
 .sr { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
+
+/* 판 위에 겹치는 폭죽 캔버스 (/js/celebrate.js). 판을 감싼 상자가 position: relative 여야 한다 */
+.confetti {
+  position: absolute; inset: 0; width: 100%; height: 100%;
+  pointer-events: none; z-index: 2;
+}
+
+/* 판 아래 한 줄 안내와 도구 버튼 줄 */
+.note { min-height: 1.5em; margin: 10px 0 0; font-size: 0.9rem; color: var(--brand); }
+.tools { display: flex; gap: 6px; flex-wrap: wrap; margin: 8px 0 0; }
+.tools button { flex: 1 1 auto; padding: 9px 10px; font-size: 0.85rem; }
+.tools button.on { background: var(--brand-2); border-color: var(--brand-2); color: #fff; font-weight: 600; }
+
+/* 난이도·단계·테마처럼 여럿 중 하나를 고르는 버튼. 크기·배치는 게임 시트가 정한다 */
+.opt {
+  color: var(--ink-soft); background: var(--paper-soft);
+  border-color: var(--line); border-radius: 8px;
+}
+.opt:hover { color: var(--brand); }
+.opt.on { background: var(--brand-2); border-color: var(--brand-2); color: #fff; font-weight: 700; }
 
 /* 조작 설명 */
 .howto dl { display: grid; grid-template-columns: auto 1fr; gap: 6px 14px; margin: 0; font-size: 0.92rem; }
@@ -13,12 +33,44 @@ button { -webkit-tap-highlight-color: transparent; }
    .card 는 위 여백이 없으니 아래 카드와 붙지 않게 여기서 띄운다. */
 #ad-here .ad { margin-bottom: 20px; }
 
-/* 게임 목록 */
-.games { display: grid; gap: 14px; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); list-style: none; padding: 0; margin: 0; }
+/* 게임 목록 - 왼쪽에 게임 화면(정사각), 오른쪽에 이름과 설명 */
+.games { display: grid; gap: 12px; grid-template-columns: repeat(auto-fit, minmax(min(300px, 100%), 1fr)); list-style: none; padding: 0; margin: 0 0 24px; }
 .games li { background: var(--paper-up); border: 1px solid var(--line); border-radius: var(--radius); overflow: hidden; }
-.games a { display: block; padding: 18px; text-decoration: none; color: inherit; height: 100%; }
+.games li > a, .games li > div { display: flex; align-items: center; gap: 14px; padding: 12px; height: 100%; }
+.games a { text-decoration: none; color: inherit; }
+.games li > a > div, .games li > div > div { min-width: 0; overflow-wrap: anywhere; }
 .games a:hover { background: var(--brand-soft); }
-.games strong { display: block; color: var(--brand); font-size: 1.05rem; margin-bottom: 4px; }
-.games span { font-size: 0.9rem; color: var(--ink-soft); }
+.games img, .games .shot-empty {
+  flex: none; width: 96px; height: 96px; border-radius: 10px; object-fit: cover;
+  border: 1px solid var(--line); background: var(--paper-soft);
+}
+.games .shot-empty { display: flex; align-items: center; justify-content: center; font-size: 2rem; color: var(--ink-soft); }
+.games strong { display: block; color: var(--brand); font-size: 1.05rem; margin-bottom: 2px; }
+.games span { font-size: 0.88rem; line-height: 1.6; color: var(--ink-soft); }
 .games li.soon { opacity: 0.6; }
-.games li.soon div { padding: 18px; }
+
+/* 폰에서는 게임 한 판이 스크롤 없이 한 화면에 들어오게 한다.
+   머리말을 한 줄로 줄이고, 제목 아래 안내 문장(.intro)은 숨긴다 — 같은 내용이 아래 '놀이 방법'에 있다.
+   판 크기는 게임마다 화면 높이(100svh)에서 판 말고 다른 것들의 높이를 뺀 만큼으로 맞춘다 (각 게임 시트의 --*-chrome).
+   --*-chrome 은 390×664 화면에서 잰 '머리말부터 맨 아래 버튼 줄까지 높이 - 판 높이' + 여유 8px 다.
+   여기 머리말·제목 규칙이나 게임의 버튼 줄을 바꾸면 그 값을 다시 잰다 (안 재면 폰에서 조금씩 스크롤이 생긴다) */
+@media (max-width: 600px) {
+  .top { padding: 8px 0; }
+  .top .wrap { padding: 0 12px; }
+  .top .wrap { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+  .top .brand { font-size: 0.95rem; white-space: nowrap; }
+  .top .nav { margin: 0; gap: 12px; font-size: 0.85rem; white-space: nowrap; }
+  main button { white-space: nowrap; }  /* 버튼 글자가 두 줄로 꺾이면 줄마다 높이를 더 먹는다 */
+  main.wrap { padding: 0 12px; }
+  main > h1 { font-size: 1.2rem; margin: 8px 0 8px; }
+  .lead.intro { display: none; }
+  .note { margin-top: 6px; font-size: 0.85rem; }
+  .tools { margin-top: 6px; gap: 4px; flex-wrap: nowrap; }
+  .tools button { padding: 8px 4px; font-size: 0.8rem; min-width: 0; }
+}
+/* 폭 320px 대 폰: 머리말과 도구 줄이 한 줄에 들어가게 글자를 한 번 더 줄인다 (높이는 그대로) */
+@media (max-width: 350px) {
+  .top .brand { font-size: 0.85rem; }
+  .top .nav { gap: 8px; font-size: 0.78rem; }
+  .tools button { font-size: 0.7rem; padding: 8px 2px; }
+}

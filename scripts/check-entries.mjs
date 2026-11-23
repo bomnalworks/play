@@ -37,7 +37,7 @@ export function checkEntries(entries, outline, { partial = false, fields = [] } 
       if (e.fields?.[f.key] === undefined) { p.push(`${at}: 분야 ${f.label} 없음`); continue }
       countSentences(`분야 ${f.label}`, e.fields[f.key], 2, 2)
       for (const s of sentences(e.fields[f.key])) {
-        if (body.has(s)) p.push(`${at}: 분야 ${f.label} 문장이 본문과 같음 — "${s}"`)
+        if (body.has(s)) p.push(`${at}: 분야 ${f.label} 문장이 본문과 같음 - "${s}"`)
       }
     }
     if (!e.lucky?.color || !e.lucky?.keyword || !Number.isInteger(e.lucky?.number)) p.push(`${at}: lucky 비어 있음`)
@@ -46,7 +46,7 @@ export function checkEntries(entries, outline, { partial = false, fields = [] } 
     for (const t of texts) {
       if (typeof t !== 'string' || !t.trim()) { p.push(`${at}: 빈 칸`); continue }
       for (const b of BANNED) if (t.includes(b)) p.push(`${at}: 금지된 말 "${b}"`)
-      for (const s of sentences(t)) if (s.length > SENT_MAX) p.push(`${at}: 문장 ${s.length}자 — "${s.slice(0, 24)}…"`)
+      for (const s of sentences(t)) if (s.length > SENT_MAX) p.push(`${at}: 문장 ${s.length}자 - "${s.slice(0, 24)}…"`)
     }
   }
 

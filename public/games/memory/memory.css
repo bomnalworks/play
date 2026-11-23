@@ -1,0 +1,86 @@
+/* 봄날 짝맞추기 전용. 이 게임 말고는 아무 데서도 안 읽는다 (이름은 mm- 로 시작) */
+
+.memory { max-width: 460px; margin: 0 auto 18px; }
+
+.mm-stages { display: grid; grid-template-columns: repeat(5, 1fr); gap: 4px; margin-bottom: 12px; }
+.mm-lv { font-size: 0.85rem; padding: 6px 0; line-height: 1.3; }
+.mm-lv small { display: block; font-size: 0.72rem; opacity: 0.8; }
+
+.mm-themes { display: flex; gap: 4px; margin-bottom: 6px; }
+.mm-theme {
+  flex: 1; display: inline-flex; align-items: center; justify-content: center; gap: 6px;
+  font-size: 0.9rem; padding: 4px 6px;
+}
+.mm-theme img { width: 20px; height: 30px; border-radius: 3px; object-fit: cover; }
+
+.mm-bar { display: flex; align-items: center; gap: 10px; margin-bottom: 10px; }
+.mm-bar .spacer { flex: 1; }
+.mm-bar button { padding: 7px 12px; font-size: 0.85rem; }
+.mm-time { font-size: 1.3rem; font-weight: 700; font-variant-numeric: tabular-nums; letter-spacing: 0.02em; }
+.mm-stat { font-size: 0.85rem; color: var(--ink-soft); }
+
+/* 판. 칸·줄 수는 --cols·--rows 로 받는다. 카드는 2:3 이라 줄이 많으면 판이 길어진다 -
+   판 하나가 화면 높이 안에 들어오도록 너비를 줄인다 (줄 수 × 카드 높이 ≈ 화면 높이 - 80px) */
+.mm-wrap { position: relative; }
+.mm-board {
+  display: grid; grid-template-columns: repeat(var(--cols, 4), 1fr); gap: var(--gap, 8px);
+  margin: 0 auto;
+  max-width: min(var(--max, 100%), max(var(--mm-min, 200px), calc((100vh - var(--mm-chrome, 80px)) * var(--cols, 4) / var(--rows, 4) * 2 / 3)));
+  max-width: min(var(--max, 100%), max(var(--mm-min, 200px), calc((100svh - var(--mm-chrome, 80px)) * var(--cols, 4) / var(--rows, 4) * 2 / 3)));
+  touch-action: manipulation;
+}
+.mm-board.paused { visibility: hidden; }
+
+.mm-card {
+  position: relative; aspect-ratio: 2 / 3; padding: 0; border: 0; border-radius: 10px;
+  background: none; cursor: pointer; perspective: 600px;
+}
+.mm-card:focus-visible { outline: 3px solid var(--brand-2); outline-offset: 2px; }
+.mm-inner {
+  position: absolute; inset: 0; transform-style: preserve-3d;
+  transition: transform 0.28s ease-out;
+}
+.mm-card.up .mm-inner { transform: rotateY(180deg); }
+.mm-side {
+  position: absolute; inset: 0; border-radius: inherit; backface-visibility: hidden;
+  display: flex; align-items: center; justify-content: center;
+}
+/* 뒷면 - 흙색 바탕에 빗금 */
+.mm-back {
+  background:
+    repeating-linear-gradient(45deg, rgba(255, 255, 255, 0.12) 0 6px, transparent 6px 12px),
+    var(--brand-2);
+  box-shadow: inset 0 0 0 3px rgba(255, 255, 255, 0.25);
+}
+.mm-front {
+  transform: rotateY(180deg); overflow: hidden;
+  background: var(--paper-up); box-shadow: 0 0 0 1px var(--line);
+}
+.mm-front img { width: 100%; height: 100%; object-fit: cover; display: block; user-select: none; -webkit-user-drag: none; }
+/* 짝 찾음·틀림 테두리는 그림 위에 덧씌운다 (안쪽 그림자는 그림 아래에 깔려 안 보인다) */
+.mm-front::after { content: ''; position: absolute; inset: 0; border-radius: inherit; pointer-events: none; }
+.mm-card.got .mm-front::after { box-shadow: inset 0 0 0 3px var(--brand-2); }
+.mm-card.miss .mm-front::after { box-shadow: inset 0 0 0 3px #b3261e; }
+.mm-card.got { cursor: default; }
+.mm-card.got .mm-inner { animation: mm-pop 0.35s ease-out; }
+@keyframes mm-pop { 50% { transform: rotateY(180deg) scale(1.08); } }
+@media (prefers-reduced-motion: reduce) {
+  .mm-inner { transition: none; }
+  .mm-card.got .mm-inner { animation: none; }
+}
+
+/* 폰: 테마·단계 버튼과 아래 도구 줄까지 한 화면에 들어오게 판을 줄인다.
+   --mm-chrome = 판 말고 나머지 높이 (카드 사이 틈 포함, 재는 법은 game.css) */
+@media (max-width: 600px) {
+  .memory { --mm-chrome: 292px; --mm-min: 160px; }
+  .mm-themes { margin-bottom: 4px; }
+  .mm-theme { padding: 2px 6px; }
+  .mm-stages { margin-bottom: 6px; }
+  .mm-lv { padding: 5px 0; }
+  .mm-lv small { display: inline; margin-left: 2px; }  /* "1단계 2×2" 를 한 줄로 */
+  .mm-bar { margin-bottom: 6px; }
+}
+/* 폭 320px 대 폰: 단계 버튼 5개가 한 줄에 들어가게 칸 수(2×2…)는 뺀다 */
+@media (max-width: 350px) {
+  .mm-lv small { display: none; }
+}

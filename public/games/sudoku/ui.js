@@ -1,8 +1,8 @@
-// 봄날 스도쿠 — 화면·입력 (규칙과 문제 만들기는 logic.js)
+// 봄날 스도쿠 - 화면·입력 (규칙과 문제 만들기는 logic.js)
 //
 // 기록과 설정은 이 브라우저(localStorage)에만 남고, 서버로 아무것도 보내지 않습니다.
 import { track, store } from '../../js/browser.js'
-import { createSound, bindSoundButton } from '../../js/sound.js'
+import { createSound, bindSoundButton, FANFARE } from '../../js/sound.js'
 import { celebrate } from '../../js/celebrate.js'
 import { mountAd } from '../../js/ad.js'
 import { createTimer, startTimer, pauseTimer, timerMs, isRunning, formatTime } from '../../js/timer.js'
@@ -24,10 +24,7 @@ const TUNES = {
   mark: [[520, 0.05, 0]],
   erase: [[420, 0.05, 0]],
   // 빵빠레
-  fanfare: [
-    [523, 0.12, 0], [659, 0.12, 110], [784, 0.12, 220], [1047, 0.3, 330],
-    [784, 0.1, 620], [1047, 0.42, 730],
-  ],
+  fanfare: FANFARE,
 }
 
 const $ = (sel) => document.querySelector(sel)
@@ -156,7 +153,7 @@ function lockButtons(locked) {
 
 const hintLine = () => {
   const best = bests[pref.level]
-  return best ? `${pref.level}레벨 최고 기록 ${formatTime(best)}` : `${pref.level}레벨 — 첫 기록을 남겨 보세요`
+  return best ? `${pref.level}레벨 최고 기록 ${formatTime(best)}` : `${pref.level}레벨 - 첫 기록을 남겨 보세요`
 }
 
 /* ---------- 고르기·넣기 ---------- */
@@ -199,7 +196,7 @@ function finishCheck() {
       bests[pref.level] = ms
       store.write(BEST_KEY, bests)
     }
-    note(`완성! ${formatTime(ms)}${record ? ' — 최고 기록이에요' : ` · 최고 ${formatTime(best)}`} · 곧 새 문제로 넘어갑니다`)
+    note(`완성! ${formatTime(ms)}${record ? ' - 최고 기록이에요' : ` · 최고 ${formatTime(best)}`} · 곧 새 문제로 넘어갑니다`)
     track('sudoku_clear')
     Sound.play('fanfare')
     celebrate(confetti, { duration: CELEBRATE_MS })
@@ -318,7 +315,7 @@ undoBtn.addEventListener('click', () => {
 })
 markBtn.addEventListener('click', () => {
   view.markMode = !view.markMode
-  note(view.markMode ? 'X 표시 모드 — 숫자를 누르면 X 를 켜고 끕니다.' : '숫자 넣기 모드')
+  note(view.markMode ? 'X 표시 모드 - 숫자를 누르면 X 를 켜고 끕니다.' : '숫자 넣기 모드')
   render()
 })
 bindSoundButton(soundBtn, Sound)

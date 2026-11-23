@@ -1,6 +1,7 @@
-// 봄날 너구리 규칙 검사 — 화면 없이 logic.js 만 돌려 본다
+// 봄날 너구리 규칙 검사 - 화면 없이 logic.js 만 돌려 본다
 import test from 'node:test'
 import assert from 'node:assert/strict'
+import { readSwipe, nextSwipe, swipeKeys, SWIPE_MIN } from '../public/games/neoguri/touch.js'
 import {
   BOX, W, H, HUD, WALL, FLOOR_Y, SCORE, LIVES, FRUITS, GAP_EDGE, LADDER_CLEAR, SPIKE_CLEAR,
   createGame, startGame, step, buildStage, boxOn, makeEnemy, ladderCenter, solidAt, hungerSeconds,
@@ -281,7 +282,7 @@ test('항아리는 보너스 아니면 뱀이다', () => {
   assert.equal(bad.stageData.enemies.length, 1, '뱀이 안 튀어나왔다')
   assert.ok(bad.events.includes('potSnake'))
 
-  // 발밑에서 나오므로 그 자리에서 바로 죽으면 안 된다 — 달아날 틈이 있어야 한다
+  // 발밑에서 나오므로 그 자리에서 바로 죽으면 안 된다 - 달아날 틈이 있어야 한다
   assert.equal(bad.lives, LIVES, '항아리를 열자마자 죽었다')
   assert.equal(bad.phase, 'playing')
   assert.ok(bad.invulnLeft > 0)
@@ -305,7 +306,7 @@ test('항아리를 열기 전에는 겉으로 알 수 없다 (판마다 섞여 �
   for (let n = 0; n < 60; n++) {
     for (const pot of buildStage(2).pots) (pot.snake ? snake++ : bonus++)
   }
-  assert.ok(bonus > 0 && snake > 0, `보너스 ${bonus} · 뱀 ${snake} — 한쪽만 나온다`)
+  assert.ok(bonus > 0 && snake > 0, `보너스 ${bonus} · 뱀 ${snake} - 한쪽만 나온다`)
 })
 
 /* ---------- 배고픔 ---------- */
@@ -438,4 +439,34 @@ test('아무 버튼이나 마구 눌러도 멈추거나 판 밖으로 나가지 
       assert.ok(e.floor >= 0 && e.floor < FLOOR_Y.length)
     }
   }
+})
+
+/* ---------- 화면 밀기 (touch.js) ---------- */
+
+test('덜 밀면 방향이 없다 (톡 치기로 본다)', () => {
+  assert.equal(readSwipe(0, 0), null)
+  assert.equal(readSwipe(SWIPE_MIN - 1, 0), null)
+})
+
+test('좌우·위아래로 밀면 그 방향, 위쪽 대각선은 그쪽 점프, 아래쪽 대각선은 걷기', () => {
+  assert.equal(readSwipe(30, 5), 'right')
+  assert.equal(readSwipe(-30, -5), 'left')
+  assert.equal(readSwipe(4, -30), 'up')
+  assert.equal(readSwipe(-4, 30), 'down')
+  assert.equal(readSwipe(25, -25), 'jumpRight')
+  assert.equal(readSwipe(-25, -25), 'jumpLeft')
+  assert.equal(readSwipe(25, 25), 'right')
+  assert.equal(readSwipe(-25, 25), 'left')
+})
+
+test('점프 대각선은 그쪽 키를 누른 채 한 번 뛴다', () => {
+  assert.deepEqual(swipeKeys('jumpRight'), { hold: { left: false, right: true, up: false, down: false }, jump: true })
+  assert.deepEqual(swipeKeys('up'), { hold: { left: false, right: false, up: true, down: false }, jump: false })
+})
+
+test('걷던 중 손가락이 살짝 위로 휜 것은 점프가 아니다 - 두 배를 밀어야 뛴다', () => {
+  assert.equal(nextSwipe('right', 12, -12), null) // 대각선이지만 짧다 - 아직 걷기
+  assert.equal(nextSwipe('right', 25, -25), 'jumpRight')
+  assert.equal(nextSwipe(null, 12, -12), 'jumpRight') // 처음부터 비스듬히 밀면 바로 뛴다
+  assert.equal(nextSwipe('right', -20, 0), 'left') // 걷기끼리는 그대로 바뀐다
 })
