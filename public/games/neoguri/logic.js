@@ -183,7 +183,6 @@ export function buildStage(stage) {
 }
 
 // floor 를 안 주면 층을 돌아가며 고르고, x 를 안 주면 구멍을 피해 뽑는다.
-// ladder 가 null 이면 걷는 중, 값이 있으면 그 사다리를 타는 중이다.
 export function makeEnemy(kind, floor, gaps, x) {
   const size = BOX[kind]
   const randX = () => WALL + 20 + randInt(W - 2 * WALL - 40 - size.w)
@@ -198,8 +197,6 @@ export function makeEnemy(kind, floor, gaps, x) {
     x,
     y: FLOOR_Y[floor] - size.h,
     dir: Math.random() < 0.5 ? -1 : 1,
-    ladder: null,
-    cool: 0.6 + Math.random(),
   }
 }
 
@@ -270,7 +267,7 @@ function loseLife(g, reason) {
 
 /* ---------- 사다리 ---------- */
 
-const centerOf = (e, size) => e.x + size.w / 2
+const centerOf = (p, size) => p.x + size.w / 2
 
 // dir = -1 올라가기(지금 층이 사다리 아래쪽) · +1 내려가기(지금 층이 사다리 위쪽)
 function ladderAt(ladders, cx, floor, dir) {
@@ -417,45 +414,13 @@ function moveEnemy(g, e, dt) {
   const speed = g.stageData.speed * (e.kind === 'scorpion' ? 1.35 : 1)
   const minX = WALL
   const maxX = W - WALL - size.w
-  const { ladders } = g.stageData
-  e.cool -= dt
 
-  if (e.ladder) {
-    const up = e.ladder.bottom === e.floor ? -1 : 1 // 타는 동안 층은 안 바뀐다
-    e.y += up * speed * 0.8 * dt
-    const top = FLOOR_Y[e.ladder.top] - size.h
-    const bottom = FLOOR_Y[e.ladder.bottom] - size.h
-    if (e.y <= top || e.y >= bottom) {
-      e.floor = e.y <= top ? e.ladder.top : e.ladder.bottom
-      e.y = FLOOR_Y[e.floor] - size.h
-      e.ladder = null
-      e.cool = 1.2
-    }
-    return
-  }
-
-  e.y = FLOOR_Y[e.floor] - size.h
+  // 적은 사다리를 타지 않고 제 층만 오간다 (층·높이는 makeEnemy 가 정한 그대로)
   const nextX = clamp(e.x + e.dir * speed * dt, minX, maxX)
   const ahead = e.dir > 0 ? nextX + size.w : nextX
   // 벽이나 구멍을 만나면 돌아선다 (벌레는 떨어지지 않는다)
   if (nextX === e.x || !solidAt(g.stageData, e.floor, ahead)) e.dir = -e.dir
   else e.x = nextX
-
-  // 뱀만 사다리를 탄다
-  if (e.kind === 'snake' && e.cool <= 0) {
-    const cx = centerOf(e, size)
-    const near = ladders.filter(
-      (l) => Math.abs(ladderCenter(l) - cx) < 4 && (l.top === e.floor || l.bottom === e.floor)
-    )
-    if (near.length && Math.random() < 0.45) {
-      const l = near[randInt(near.length)]
-      e.ladder = l
-      e.x = clamp(ladderCenter(l) - size.w / 2, minX, maxX)
-      e.y += l.bottom === e.floor ? -1 : 1 // 바로 사다리 안으로 들여보낸다
-    } else {
-      e.cool = 0.4
-    }
-  }
 }
 
 /* ---------- 먹기·부딪힘 ---------- */
@@ -481,7 +446,7 @@ function collect(g) {
       // 뱀이 튀어나온다 - 항아리가 있던 자리에서 바로.
       // 발밑에서 나오니 잠깐 달아날 틈을 주지 않으면 그 자리에서 바로 죽는다.
       const x = clamp(pot.x, WALL, W - WALL - BOX.snake.w)
-      g.stageData.enemies.push({ ...makeEnemy('snake', pot.floor, g.stageData.gaps, x), cool: 1 })
+      g.stageData.enemies.push(makeEnemy('snake', pot.floor, g.stageData.gaps, x))
       g.invulnLeft = Math.max(g.invulnLeft, POT_GRACE)
       emit(g, 'potSnake')
     } else {

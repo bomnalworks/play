@@ -44,7 +44,7 @@ function standAt(game, floor, x = WALL + 20) {
 
 const sandbox = () => flat(fresh())
 
-const spawn = (kind, floor, x) => ({ ...makeEnemy(kind, floor, null, x), cool: 9 })
+const spawn = (kind, floor, x) => makeEnemy(kind, floor, null, x)
 
 const enemyAtPlayer = (game, kind = 'snake') => {
   game.stageData.enemies = [spawn(kind, game.player.floor, game.player.x)]
@@ -388,11 +388,10 @@ test('마지막 과일을 먹은 걸음에 뱀에 닿으면 단계 통과가 아
 
 /* ---------- 적 ---------- */
 
-test('전갈은 사다리를 타지 않고, 둘 다 구멍에 빠지지 않는다', () => {
+test('뱀도 전갈도 사다리를 타지 않고, 둘 다 구멍에 빠지지 않는다', () => {
   const game = sandbox()
   game.stageData.gaps[1] = [{ x0: 150, x1: 190 }] // 1층 한가운데 구멍 하나
   game.stageData.enemies = [spawn('scorpion', 1, 100), spawn('snake', 1, 240)]
-  for (const e of game.stageData.enemies) e.cool = 0
   const scorpion = game.stageData.enemies[0]
   let turned = false
 
@@ -402,9 +401,8 @@ test('전갈은 사다리를 타지 않고, 둘 다 구멍에 빠지지 않는�
     game.hunger = 1
     step(game, DT, NONE)
     if (scorpion.dir !== was) turned = true
-    assert.equal(scorpion.floor, 1, '전갈이 층을 옮겼다')
     for (const e of game.stageData.enemies) {
-      if (e.ladder) continue
+      assert.equal(e.floor, 1, `${e.kind} 가 층을 옮겼다`)
       const size = BOX[e.kind]
       assert.ok(solidAt(game.stageData, e.floor, e.x + size.w / 2), `${e.kind} 가 구멍 위에 떠 있다`)
     }

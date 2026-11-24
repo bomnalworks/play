@@ -273,7 +273,7 @@ function drawSnake(ctx, w, h, t) {
   ctx.stroke()
 }
 
-/* ---------- 전갈 (사다리는 못 타지만 빠르다) ---------- */
+/* ---------- 전갈 (뱀보다 빠르다) ---------- */
 
 function drawScorpion(ctx, w, h, t) {
   const sting = Math.sin(t * Math.PI * 2) * 1.2
