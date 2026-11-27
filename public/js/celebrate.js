@@ -3,7 +3,11 @@
 // 겹쳐 놓은 캔버스에만 그리므로 아래 화면은 그대로 보인다. 어느 게임이든 쓸 수 있다.
 // "동작을 줄여 주세요"로 기기를 설정해 둔 사람에게는 터뜨리지 않는다.
 
-const COLORS = ['#b5573a', '#e0b35a', '#5f8f4a', '#efe3d3', '#a5804f', '#d37c5a']
+// 봄날웍스 브랜드 색 + 금색 하나. 어두운 화면에서는 갈색·진한 세이지가 바탕에 묻히니 밝은 색으로 바꾼다
+const dark = window.matchMedia?.('(prefers-color-scheme: dark)').matches ?? false
+const COLORS = dark
+  ? ['#ede6da', '#87977b', '#d8c4a7', '#bcc8b1', '#e0b35a', '#a9b79c']
+  : ['#514238', '#87977b', '#d8c4a7', '#5e6d52', '#e0b35a', '#a9b79c']
 const GRAVITY = 420 // px/초²
 const DRAG = 0.86 // 초당 남는 속도 비율
 const BURSTS = 4 // 터지는 발 수

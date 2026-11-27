@@ -14,7 +14,7 @@ button { -webkit-tap-highlight-color: transparent; }
 .note { min-height: 1.5em; margin: 10px 0 0; font-size: 0.9rem; color: var(--brand); }
 .tools { display: flex; gap: 6px; flex-wrap: wrap; margin: 8px 0 0; }
 .tools button { flex: 1 1 auto; padding: 9px 10px; font-size: 0.85rem; }
-.tools button.on { background: var(--brand-2); border-color: var(--brand-2); color: #fff; font-weight: 600; }
+.tools button.on { background: var(--brand-2); border-color: var(--brand-2); color: var(--on-brand-2); font-weight: 600; }
 
 /* 난이도·단계·테마처럼 여럿 중 하나를 고르는 버튼. 크기·배치는 게임 시트가 정한다 */
 .opt {
@@ -22,7 +22,7 @@ button { -webkit-tap-highlight-color: transparent; }
   border-color: var(--line); border-radius: 8px;
 }
 .opt:hover { color: var(--brand); }
-.opt.on { background: var(--brand-2); border-color: var(--brand-2); color: #fff; font-weight: 700; }
+.opt.on { background: var(--brand-2); border-color: var(--brand-2); color: var(--on-brand-2); font-weight: 700; }
 
 /* 조작 설명 */
 .howto dl { display: grid; grid-template-columns: auto 1fr; gap: 6px 14px; margin: 0; font-size: 0.92rem; }

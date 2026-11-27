@@ -1,7 +1,22 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32">
-  <rect width="32" height="32" rx="8" fill="#b5573a"/>
-  <circle cx="16" cy="16" r="5" fill="#faf8f4"/>
-  <g stroke="#faf8f4" stroke-width="2" stroke-linecap="round">
-    <path d="M16 3v4M16 25v4M3 16h4M25 16h4M7 7l3 3M22 22l3 3M25 7l-3 3M10 22l-3 3"/>
-  </g>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200" width="200" height="200" role="img" aria-label="봄날웍스">
+<title>봄날웍스</title>
+<circle cx="100" cy="100" r="100" fill="#87977B"/>
+<g transform="translate(14.0 10.6) scale(0.86)"><g>
+    <mask id="ep" maskUnits="userSpaceOnUse" x="0" y="0" width="200" height="200">
+      <rect width="200" height="200" fill="#fff"/>
+      <path d="M100 50 C140 50 166 74 167 108 C168 146 140 176 100 176 C60 176 32 146 33 108 C34 74 60 50 100 50 Z" fill="#000"/>
+    </mask>
+    <g mask="url(#ep)" fill="none" stroke="#FFFFFF" stroke-width="15">
+      <circle cx="53" cy="62" r="24"/>
+      <circle cx="147" cy="62" r="24"/>
+      <circle cx="53" cy="62" r="10" stroke-width="12.0"/>
+      <circle cx="147" cy="62" r="10" stroke-width="12.0"/>
+    </g>
+    <path d="M100 50 C140 50 166 74 167 108 C168 146 140 176 100 176 C60 176 32 146 33 108 C34 74 60 50 100 50 Z" fill="none" stroke="#FFFFFF" stroke-width="15" stroke-linejoin="round"/>
+    <circle cx="75" cy="106" r="7" fill="#FFFFFF"/>
+    <circle cx="125" cy="106" r="7" fill="#FFFFFF"/>
+    <path d="M100 118 C121 118 132 127 131 141 C130 155 117 162 100 162 C83 162 70 155 69 141 C68 127 79 118 100 118 Z" fill="none" stroke="#FFFFFF" stroke-width="12.0" stroke-linejoin="round"/>
+    <path d="M89 129 C89 123 111 123 111 129 C111 135 105 140 100 140 C95 140 89 135 89 129 Z" fill="#FFFFFF"/>
+    <path d="M100 140 L100 145 M89 146 C94 152 100 151 100 145 C100 151 106 152 111 146" fill="none" stroke="#FFFFFF" stroke-width="7.5" stroke-linecap="round" stroke-linejoin="round"/>
+  </g></g>
 </svg>

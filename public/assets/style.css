@@ -1,29 +1,32 @@
-/* 봄날웍스 홈페이지와 같은 종이색 바탕 + 흙색 포인트. (site/.vitepress/theme/custom.css) */
+/* 봄날웍스 브랜드 v1.0 (bomnal/brand/BRAND.md) - 홈페이지(site/.vitepress/theme/custom.css)와 같은 색.
+   --brand: 링크·강조 글자(딥 브라운), --brand-2: 선택·버튼 바탕(진한 세이지, 흰 글자 5.5:1), 그 위 글자는 --on-brand-2. 게임 판 색은 게임 시트가 정한다. */
 :root {
-  --paper: #faf8f4;
-  --paper-soft: #f3efe8;
-  --paper-up: #fffdf9;
-  --ink: #2b2622;
-  --ink-soft: #5e564e;
-  --line: #e6dfd4;
-  --brand: #a34e33;
-  --brand-2: #b5573a;
-  --brand-soft: rgba(181, 87, 58, 0.12);
+  --paper: #f7f4ed;
+  --paper-soft: #f0e9dc;
+  --paper-up: #fffdf8;
+  --ink: #3a322c;
+  --ink-soft: #6b5f55;
+  --line: #e4dacb;
+  --brand: #514238;
+  --brand-2: #5e6d52;
+  --on-brand-2: #fff;   /* --brand-2·--brand 바탕 위 글자 */
+  --brand-soft: rgba(135, 151, 123, 0.18);
   --radius: 14px;
-  --font: 'Pretendard Variable', Pretendard, -apple-system, BlinkMacSystemFont, 'Apple SD Gothic Neo',
-    'Malgun Gothic', 'Noto Sans KR', sans-serif;
+  --font: Pretendard, 'Pretendard Variable', -apple-system, BlinkMacSystemFont, 'Apple SD Gothic Neo',
+    'Noto Sans KR', 'Malgun Gothic', sans-serif;
 }
 @media (prefers-color-scheme: dark) {
   :root {
-    --paper: #1f1c19;
-    --paper-soft: #282420;
-    --paper-up: #282420;
-    --ink: #ece6dd;
-    --ink-soft: #b3aa9e;
-    --line: #38322c;
-    --brand: #e0906f;
-    --brand-2: #d37c5a;
-    --brand-soft: rgba(224, 144, 111, 0.14);
+    --paper: #1e1a16;
+    --paper-soft: #28221d;
+    --paper-up: #28221d;
+    --ink: #ede6da;
+    --ink-soft: #b5a99a;
+    --line: #3a322b;
+    --brand: #a9b79c;
+    --brand-2: #87977b;     /* 어두운 판 위 ○·테두리가 보이게 밝은 세이지 */
+    --on-brand-2: #1e1a16;  /* 밝은 세이지 위라 글자는 어둡게 (5.6:1) */
+    --brand-soft: rgba(169, 183, 156, 0.16);
   }
 }
 
@@ -51,7 +54,10 @@ p { margin: 0 0 12px; }
 .skip:focus { left: 8px; top: 8px; background: var(--paper-up); padding: 8px 12px; border-radius: 8px; z-index: 5; }
 
 .top { border-bottom: 1px solid var(--line); background: var(--paper-soft); padding: 14px 0; }
-.brand { font-weight: 700; margin: 0; }
+.brand { font-weight: 800; margin: 0; display: flex; align-items: center; gap: 0 8px; flex-wrap: wrap; color: var(--brand); }
+.brand-mark { display: inline-flex; flex: none; }
+.brand-mark img { width: 30px; height: 30px; display: block; }
+.brand-sub { flex-basis: 100%; padding-left: 38px; font-size: 0.8rem; font-weight: 600; color: var(--ink-soft); letter-spacing: 0.04em; line-height: 1.4; }
 .tag { margin: 2px 0 0; font-size: 0.85rem; color: var(--ink-soft); }
 .nav { display: flex; gap: 16px; margin: 8px 0 0; font-size: 0.9rem; }
 .nav a { color: var(--ink-soft); text-decoration: none; padding: 2px 0; border-bottom: 2px solid transparent; }
@@ -84,7 +90,7 @@ input[type='number']:focus-visible, button:focus-visible, .chip:focus-within { o
 @media (prefers-color-scheme: dark) { .error { color: #f2b8b5; } }
 .actions { margin-top: 16px; }
 button { font: inherit; cursor: pointer; border-radius: 10px; padding: 11px 18px; border: 1px solid transparent; }
-button.primary { background: var(--brand-2); color: #fff; font-weight: 600; }
+button.primary { background: var(--brand-2); color: var(--on-brand-2); font-weight: 600; }
 button.primary:hover { background: var(--brand); }
 button.plain { background: var(--paper); color: var(--ink-soft); border-color: var(--line); }
 .remember { display: flex; gap: 8px; align-items: center; font-size: 0.85rem; color: var(--ink-soft); margin-top: 14px; }

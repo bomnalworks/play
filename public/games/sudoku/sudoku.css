@@ -10,7 +10,7 @@
   border-color: var(--line); border-radius: 8px;
 }
 .lv:hover:not(:disabled) { color: var(--brand); }
-.lv.on { background: var(--brand-2); border-color: var(--brand-2); color: #fff; font-weight: 700; }
+.lv.on { background: var(--brand-2); border-color: var(--brand-2); color: var(--on-brand-2); font-weight: 700; }
 .lv:disabled { opacity: 0.5; cursor: default; }
 
 .bar { display: flex; align-items: center; gap: 10px; margin-bottom: 10px; }
@@ -44,7 +44,7 @@
 .cell.near { background: var(--brand-soft); }
 .cell.fixed.near { background: color-mix(in srgb, var(--brand-soft) 70%, var(--paper-soft)); }
 .cell.same { outline: 2px solid var(--brand-2); outline-offset: -2px; }
-.cell.on { background: var(--brand-2); color: #fff; }
+.cell.on { background: var(--brand-2); color: var(--on-brand-2); }
 .cell.on.fixed { color: #fff; }
 .cell.wrong { color: #b3261e; background: rgba(179, 38, 30, 0.12); }
 .cell.stuck { background: rgba(179, 38, 30, 0.18); }
