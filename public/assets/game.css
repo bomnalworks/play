@@ -47,6 +47,16 @@ button { -webkit-tap-highlight-color: transparent; }
 .hall-at { font-size: 0.8rem; color: var(--ink-soft); }
 .hall-list li.mine { background: var(--brand-soft); border-radius: 8px; }
 
+/* 내 전적 - 점수가 없는 게임(리버시·틱택토)의 난이도별 전적 (js/record.js) */
+.record-table { width: 100%; border-collapse: collapse; margin: 0 0 10px; font-size: 0.9rem; font-variant-numeric: tabular-nums; }
+.record-table th, .record-table td { padding: 7px 6px; text-align: left; border-bottom: 1px dashed var(--line); }
+.record-table thead th { font-size: 0.8rem; font-weight: 600; color: var(--ink-soft); }
+.record-table tbody th { color: var(--brand); font-weight: 700; white-space: nowrap; }
+.record-table tbody tr:last-child > * { border-bottom: 0; }
+.record-table tr.on > * { background: var(--brand-soft); }
+.record-table tr.on > :first-child { border-radius: 8px 0 0 8px; }
+.record-table tr.on > :last-child { border-radius: 0 8px 8px 0; }
+
 /* 이니셜 넣는 창 - 오락실 기록판처럼 큰 글자 세 칸 */
 .hall-dialog {
   border: 1px solid var(--line); border-radius: var(--radius); padding: 22px 20px 18px;
@@ -78,6 +88,11 @@ button { -webkit-tap-highlight-color: transparent; }
 }
 .games .shot-empty { display: flex; align-items: center; justify-content: center; font-size: 2rem; color: var(--ink-soft); }
 .games strong { display: block; color: var(--brand); font-size: 1.05rem; margin-bottom: 2px; }
+/* 가장 최근에 나온 게임 표시 (목록 맨 위 하나에만) */
+.games .new {
+  display: inline-block; vertical-align: 2px; margin-left: 4px; padding: 1px 7px; border-radius: 999px;
+  font-style: normal; font-size: 0.72rem; font-weight: 700; color: var(--on-brand-2); background: var(--brand-2);
+}
 .games span { font-size: 0.88rem; line-height: 1.6; color: var(--ink-soft); }
 .games li.soon { opacity: 0.6; }
 /* 예전에 토정비결 주소(/)로 공유된 링크로 온 사람에게 바로 가는 길 */

@@ -17,6 +17,8 @@ const range = (n) => Array.from({ length: n }, (_, i) => String(i + 1))
 export const GAMES = {
   plane: { name: '봄날 종이비행기', better: 'high', unit: 'm', boards: ['all'], min: () => 1, max: () => 100000 },
   neoguri: { name: '봄날 너구리', better: 'high', unit: '점', boards: ['all'], min: () => 10, max: () => 999990 },
+  // 블록 퍼즐: 조각 하나만 놓아도 1점. 줄 점수에 콤보가 곱해져 커질 수 있어 위는 넉넉히
+  blocks: { name: '봄날 블록 퍼즐', better: 'high', unit: '점', boards: ['all'], min: () => 1, max: () => 99_999_999 },
   // 스도쿠는 레벨마다 따로. 아무리 빨라도 15초 안에는 못 푼다.
   // 10 은 sudoku/logic.js 의 MAX_LEVEL (생성기가 커서 가져오지 않는다 - 맞는지는 tests/scores.test.js 가 본다)
   sudoku: {

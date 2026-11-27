@@ -5,6 +5,7 @@ import { track, store } from '../../js/browser.js'
 import { createSound, bindSoundButton, FANFARE } from '../../js/sound.js'
 import { celebrate } from '../../js/celebrate.js'
 import { mountAd } from '../../js/ad.js'
+import { createRecord } from '../../js/record.js'
 import {
   BLACK, WHITE, other, LEVELS, LEVEL_NAME,
   createGame, play, legalMoves, score, undoTo, canUndoTo, winner, chooseMove,
@@ -47,7 +48,7 @@ const Sound = createSound(SOUND_KEY, TUNES)
 const pref = { level: 'normal', side: BLACK, hints: true, ...store.read(PREF_KEY, {}) }
 if (!LEVELS.includes(pref.level)) pref.level = 'normal'
 if (pref.side !== WHITE) pref.side = BLACK
-const records = store.read(RECORD_KEY, {})
+const record = createRecord(RECORD_KEY, LEVELS, LEVEL_NAME) // 난이도별 전적·연승 (/js/record.js)
 
 const view = {
   game: null,
@@ -103,6 +104,9 @@ const sideButtons = optionButtons(sideBox, [[BLACK, '흑 (먼저)'], [WHITE, '�
 
 function newGame() {
   clearTimeout(view.cpuTimer)
+  // 한 수라도 둔 판을 끝내지 않고 버리면 그 판 난이도의 연승을 끊는다 (난이도를 바꿔 새 판이 열릴 때도)
+  if (view.started && view.game && !view.game.over) record.quit(view.level)
+  view.level = pref.level
   view.game = createGame()
   view.thinking = false
   view.started = false
@@ -173,9 +177,7 @@ function finish() {
   const result = w === 0 ? 'd' : w === pref.side ? 'w' : 'l'
 
   if (view.started) {
-    const rec = (records[pref.level] ??= { w: 0, l: 0, d: 0 })
-    rec[result]++
-    store.write(RECORD_KEY, records)
+    record.add(pref.level, result)
     track('reversi_end')
   }
 
@@ -252,10 +254,7 @@ function render(moved = false) {
   hintBtn.classList.toggle('on', pref.hints)
   hintBtn.setAttribute('aria-pressed', String(pref.hints))
 
-  const rec = records[pref.level]
-  recordBox.textContent = rec
-    ? `${LEVEL_NAME[pref.level]} 전적 ${rec.w}승 ${rec.l}패${rec.d ? ` ${rec.d}무` : ''}`
-    : `${LEVEL_NAME[pref.level]} - 아직 전적이 없어요`
+  recordBox.textContent = record.show(pref.level)
 }
 
 const note = (text) => {

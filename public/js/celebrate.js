@@ -12,7 +12,8 @@ const GRAVITY = 420 // px/초²
 const DRAG = 0.86 // 초당 남는 속도 비율
 const BURSTS = 4 // 터지는 발 수
 
-const calm = () => window.matchMedia?.('(prefers-reduced-motion: reduce)').matches ?? false
+/** 기기에 '동작을 줄여 주세요'가 켜져 있나 (블록 퍼즐의 파편·흔들기도 이것을 본다) */
+export const calm = () => window.matchMedia?.('(prefers-reduced-motion: reduce)').matches ?? false
 
 // 한 점에서 사방으로 터지는 한 발
 function burst(parts, x, y, count) {

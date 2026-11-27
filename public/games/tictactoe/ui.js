@@ -5,6 +5,7 @@ import { track, store } from '../../js/browser.js'
 import { createSound, bindSoundButton, FANFARE } from '../../js/sound.js'
 import { celebrate } from '../../js/celebrate.js'
 import { mountAd } from '../../js/ad.js'
+import { createRecord } from '../../js/record.js'
 import { EMPTY, O, X, LEVELS, LEVEL_NAME, createGame, play, chooseMove } from './logic.js'
 
 const PREF_KEY = 'bomnal-ttt-pref-v1'
@@ -47,7 +48,7 @@ const Sound = createSound(SOUND_KEY, TUNES)
 const pref = { level: 'normal', first: 'me', ...store.read(PREF_KEY, {}) }
 if (!LEVELS.includes(pref.level)) pref.level = 'normal'
 if (pref.first !== 'cpu') pref.first = 'me'
-const records = store.read(RECORD_KEY, {})
+const record = createRecord(RECORD_KEY, LEVELS, LEVEL_NAME) // 난이도별 전적·연승 (/js/record.js)
 
 const view = {
   game: null,
@@ -103,6 +104,9 @@ const sideButtons = optionButtons(sideBox, [['me', '내가 먼저'], ['cpu', '�
 
 function newGame() {
   clearTimeout(view.timer)
+  // 한 수라도 둔 판을 끝내지 않고 버리면 그 판 난이도의 연승을 끊는다 (난이도를 바꿔 새 판이 열릴 때도)
+  if (view.started && view.game && !view.game.over) record.quit(view.level)
+  view.level = pref.level
   view.game = createGame(pref.first === 'me' ? HUMAN : CPU)
   view.thinking = false
   view.started = false
@@ -145,9 +149,7 @@ function finish() {
   const result = game.result === 0 ? 'd' : game.result === HUMAN ? 'w' : 'l'
   view.session[result]++
   if (view.started) {
-    const rec = (records[pref.level] ??= { w: 0, l: 0, d: 0 })
-    rec[result]++
-    store.write(RECORD_KEY, records)
+    record.add(pref.level, result)
     track('ttt_end')
   }
   if (result === 'w') {
@@ -191,10 +193,7 @@ function render() {
   for (const { value, btn } of levelButtons) btn.classList.toggle('on', value === pref.level)
   for (const { value, btn } of sideButtons) btn.classList.toggle('on', value === pref.first)
 
-  const rec = records[pref.level]
-  recordBox.textContent = rec
-    ? `${LEVEL_NAME[pref.level]} 전체 전적 ${rec.w}승 ${rec.d}무 ${rec.l}패`
-    : `${LEVEL_NAME[pref.level]} - 아직 전적이 없어요`
+  recordBox.textContent = record.show(pref.level)
 }
 
 const note = (text) => {

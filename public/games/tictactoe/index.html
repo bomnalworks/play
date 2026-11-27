@@ -30,6 +30,7 @@
 <link rel="modulepreload" href="ui.js" />
 <link rel="modulepreload" href="logic.js" />
 <link rel="modulepreload" href="/js/celebrate.js" />
+<link rel="modulepreload" href="/js/record.js" />
 </head>
 <body>
 <a class="skip" href="#main">본문으로 건너뛰기</a>
@@ -74,6 +75,9 @@
     <p class="ttt-record" id="record"></p>
   </div>
 
+  <!-- 내 전적 (난이도별 전적·연승). 이 브라우저에만 남는다 - /js/record.js 가 그린다 -->
+  <div id="record-here"></div>
+
   <!-- 광고 자리. 페이지를 열면 바로 쿠팡 광고가 들어온다 (/js/ad.js) -->
   <div id="ad-here"></div>
 
@@ -93,7 +97,7 @@
     <h2 id="notes-title">알려 드립니다</h2>
     <ul>
       <li>컴퓨터 상대는 <strong>이 브라우저 안에서</strong> 생각합니다. 서버로 아무것도 보내지 않습니다.</li>
-      <li>난이도별 전적은 <strong>이 브라우저에만</strong> 남습니다.</li>
+      <li>난이도별 전적(몇 전 몇 승, 연승)은 <strong>이 브라우저에만</strong> 남고, <strong>내 전적</strong> 칸에서 볼 수 있습니다. 서버로는 보내지 않습니다.</li>
       <li>방문 통계를 보려고 Google 애널리틱스 쿠키를 씁니다. 시작·끝냈다는 사실만 집계하며 <strong>수나 결과는 보내지 않습니다.</strong></li>
     </ul>
   </section>
@@ -101,7 +105,7 @@
 
 <footer class="bottom">
   <div class="wrap">
-    <p>봄날 운세 오락실 · <a href="https://bomnalworks.com" rel="noopener">봄날웍스</a></p>
+    <p>봄날 운세 오락실 · <a href="https://bomnalworks.com" rel="noopener">봄날웍스</a> · <a href="https://bomnalworks.com/privacy" rel="noopener">개인정보처리방침</a></p>
     <p class="small">봄날의곰 (Bomnal Works) · 사업자등록번호 264-01-02496 · contact@bomnalworks.com</p>
   </div>
 </footer>
